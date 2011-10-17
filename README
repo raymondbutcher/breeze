@@ -1,0 +1,19 @@
+A web site platform that will use Tornado Web and MongoDB.
+
+This is largely a learning experience with Tornado and asynchronous apps
+in general, but I hope to eventually make this a decent website platform.
+
+The general plan is to:
+
+1. Develop it to a point where I can create and customize a basic blog
+   using only the platform's interface.
+2. Keep enhancing it with any new features and ideas that come up.
+
+I do not wish to plan this in-depth at this point, because seeing all of the
+requirements in one document would kill my motivation.
+
+Some overall goals include:
+
+* Allow building dynamic pages via a JavaScript interface.
+* Allow flexible lists of various content types.
+* Allow commenting on everything.

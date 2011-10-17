@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page['title'] }}{% end %}
+
+{% block content %}
+    {% for row in page['structure'] %}
+    <div class="container">
+        <div class="row">
+            {% set last_row = len(row) - 1 %}
+            {% for counter, column in enumerate(row) %}
+            <div class="column {{ get_css_class(column['colspan']) }}{% if counter == last_row %} last{% end %}">
+                {% module PageContent(column['content']) %}
+            </div>
+            {% end %}
+        </div>
+    </div>
+    {% end %}
+{% end%}

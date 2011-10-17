@@ -1,0 +1,11 @@
+<div class="container">{% for row in structure %}
+    <div class="row">{% for column in row %}
+        <div class="{{ column['css_class'] }}">
+            {% if hasattr(column['content'], 'render') %}
+                {% raw column['content'].render() %}
+            {% else %}
+                {% raw column['content'] %}
+            {% end %}
+        </div>
+    {% end %}</div>
+{% end %}</div>
