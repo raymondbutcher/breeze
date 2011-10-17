@@ -15,7 +15,7 @@ from breeze.ui import uimodules
 
 # Define the application's URL handlers.
 urls = (
-    (r'/create-fake/', FakePageHandler),
+    (r'/create-fake/', FakePageHandler), # TODO: Delete this, it sucks and I hate it.
     (r'/(.*)', PageHandler),
     (r'/', PageHandler),
 )
