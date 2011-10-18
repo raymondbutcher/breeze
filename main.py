@@ -9,12 +9,18 @@ from tornado.ioloop import IOLoop
 from tornado.options import options, parse_command_line, parse_config_file
 from tornado.web import Application
 
-from breeze.handlers import PageHandler, FakePageHandler
+from breeze.handlers.admin import AdminHandler
+from breeze.handlers.page import PageHandler
+from breeze.handlers.fakepage import FakePageHandler
+
+#from breeze.handlers import PageHandler, FakePageHandler
+from breeze.handlers.admin import AdminHandler
 from breeze.ui import uimodules
 
 
 # Define the application's URL handlers.
 urls = (
+    (r'/admin/', AdminHandler),
     (r'/create-fake/', FakePageHandler), # TODO: Delete this, it sucks and I hate it.
     (r'/(.*)', PageHandler),
     (r'/', PageHandler),

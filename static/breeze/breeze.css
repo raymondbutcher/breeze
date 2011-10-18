@@ -2,30 +2,72 @@
 /* ! Layout for desktop version   */
 /* ============================== */
 
-body {
+.page {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: justify;
     margin-bottom: 1em;
 }
 
-h1, h2, h3, h4, h5, h6, p, ul, ol {
+.page h1,
+.page h2,
+.page h3,
+.page h4,
+.page h5,
+.page h6,
+.page p,
+.page ul,
+.page ol {
     margin: 1em 0 1em 0;
 }
 
-ul, ol {
+.page ul,
+.page ol {
     list-style-position: inside;
 }
 
-hr {
+.page hr {
     border: solid 1px black;
     margin: 1em 0 0 0;
 }
-.last hr {
+.page .last hr {
     margin-right: 2px;
 }
 
+.ui-dialog,
+.ui-tabs {
+    font-size: 0.65em;
+}
 
+.ui-dialog {
+    margin: 16px 24px 16px 16px;
+}
 
+#breeze-admin ul.ui-tabs-nav a {
+    line-height: 16px;
+    padding-left: .5em;
+}
+#breeze-admin ul.ui-tabs-nav span {
+    float: left;
+}
+
+#breeze-admin div.ui-tabs-panel li {
+    display: block;
+    float: left;
+    list-style: none;
+    margin-right: 1em;
+}
+#breeze-admin div.ui-tabs-panel .ui-button {
+    display: block;
+    float: left;
+    font-size: 1.1em;
+    line-height: 1.5em;
+    cursor: pointer;
+    padding: 0.3em 0.6em;
+}
+#breeze-admin div.ui-tabs-panel .ui-icon {
+    float: left;
+    margin-right: 2px;
+}
 
 
 /* ============================= */

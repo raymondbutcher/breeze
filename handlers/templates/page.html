@@ -3,8 +3,8 @@
 {% block title %}{{ page['title'] }}{% end %}
 
 {% block content %}
-    {% for row in page['structure'] %}
-    <div class="container">
+    <div class="page container" id="page-{{ page['_id'] }}">
+        {% for row in page['structure'] %}
         <div class="row">
             {% set last_row = len(row) - 1 %}
             {% for counter, column in enumerate(row) %}
@@ -13,6 +13,6 @@
             </div>
             {% end %}
         </div>
+        {% end %}
     </div>
-    {% end %}
 {% end%}

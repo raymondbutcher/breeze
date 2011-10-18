@@ -1,27 +1,7 @@
-import asyncmongo
-
-import tornado.escape
+import tornado.gen
 import tornado.web
 
-import tornado.gen
-
-
-class MongoHandler(tornado.web.RequestHandler):
-
-    @property
-    def db(self):
-        if not hasattr(self, '_db'):
-            self._db = asyncmongo.Client(pool_id='mydb', host='raymondvm.local', port=27017, maxcached=10, maxconnections=50, dbname='test')
-        return self._db
-
-    def get_mongo_result(self, gen_result):
-        args, kwargs = gen_result
-        result, error = (lambda results, error=None: (results[0], error))(args, **kwargs)
-        if error:
-            raise tornado.web.HTTPError(500, error)
-        if not result:
-            raise tornado.web.HTTPError(404)
-        return result
+from breeze.handlers.mongo import MongoHandler
 
 
 class FakePageHandler(MongoHandler):
@@ -165,36 +145,3 @@ float: left;
         result = self.get_mongo_result(result)
         self.write('Created fake page for %s' % path)
         self.finish()
-
-
-class PageHandler(MongoHandler):
-
-    css_column_classes = {
-        1: 'onecol',
-        2: 'twocol',
-        3: 'threecol',
-        4: 'fourcol',
-        5: 'fivecol',
-        6: 'sixcol',
-        7: 'sevencol',
-        8: 'eightcol',
-        9: 'ninecol',
-        10: 'tencol',
-        11: 'elevencol',
-        12: 'twelvecol',
-    }
-
-    def get_css_class(self, colspan):
-        return self.css_column_classes[colspan]
-
-    @tornado.web.addslash
-    @tornado.web.asynchronous
-    @tornado.gen.engine
-    def get(self, path):
-        path = '/%s' % path
-        result = yield tornado.gen.Task(self.db.pages.find_one, {'path': path})
-        context = {
-            'page': self.get_mongo_result(result),
-            'get_css_class': self.get_css_class,
-        }
-        self.render('templates/page.html', **context)

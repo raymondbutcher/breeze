@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}...{% end %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!--[if lte IE 9]><link rel="stylesheet" href="{{ static_url("cssgrid/ie.css") }}" type="text/css" media="screen" /><![endif]-->
+        <link rel="stylesheet" href="{{ static_url("cssgrid/1140.css") }}" type="text/css" media="screen" />
+        <link rel="stylesheet" href="{{ static_url("jquery-ui/1.8.16/cupertino/jquery-ui.css") }}" type="text/css" media="screen" />
+        <link rel="stylesheet" href="{{ static_url("breeze/breeze.css") }}" type="text/css" media="screen" />
+    </head>
+    <body>
+        {% block content %}<p>...</p>{% end %}
+        <script type="text/javascript" src="{{ static_url("css3-mediaqueries/2010-03-01/css3-mediaqueries.js") }}"></script>
+        <script type="text/javascript" src="{{ static_url("jquery/1.6.4/jquery.min.js") }}"></script>
+        <script type="text/javascript" src="{{ static_url("jquery-ui/1.8.16/js/jquery-ui.min.js") }}"></script>
+        <script type="text/javascript" src="{{ static_url("breeze/breeze.js") }}"></script>
+    </body>
+</html>
