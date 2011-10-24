@@ -11,7 +11,7 @@ $(document).ready(function() {
             $('body').prepend($menu);
             $menu.find('li.start a').fadeTo(0, 0).fadeTo('slow', 1);
             
-            // Simple hover effect for the start icon.
+            // Hovering over the start button.
             $menu.find('li.start').hover(
                 function() {
                     $(this).children('a').addClass('ui-state-hover');
@@ -21,77 +21,121 @@ $(document).ready(function() {
                 }
             );
             
-            // Display the main menu when hovering intentionally.
+            // Hovering intentionally over the start button.
             $menu.find('li.start').hoverIntent({
                 over: function() {
+                    /* Show the admin menu. */
+                    
                     var $this = $(this);
                     var $menu = $this.parents('.breeze-menu');
+                    var $button = $this.children('a');
+                    var $submenu = $this.children('ul');
+                    
                     $menu.addClass('ui-widget ui-tabs-collapsible');
                     $menu.removeClass('breeze-menu-off');
-                    var $submenu = $this.children('ul');
+                    $button.addClass('ui-helper-hidden');
                     $submenu.addClass('ui-helper-clearfix')
                     $submenu.removeClass('ui-helper-hidden');
-                    var $button = $this.children('a');
-                    $button.addClass('ui-helper-hidden');
                 },
                 out: function() {
+                    /* Hide the admin menu. */
+                    
                     var $this = $(this);
                     var $menu = $this.parents('.breeze-menu');
+                    var $button = $this.children('a');
+                    var $submenu = $this.children('ul');
+                    
                     $menu.addClass('breeze-menu-off');
                     $menu.removeClass('ui-widget ui-tabs-collapsible');
-                    var $submenu = $this.children('ul');
+                    $button.removeClass('ui-helper-hidden');
                     $submenu.removeClass('ui-helper-clearfix')
                     $submenu.addClass('ui-helper-hidden');
-                    var $button = $this.children('a');
-                    $button.removeClass('ui-helper-hidden');
-                },
-                timeout: 500
-            });
-            
-            // Simple hover effect for menu icons, plus hiding submenus
-            // immediately when switching between menus.
-            $menu.find('.breeze-menu-main li').hover(
-                function() {
-                    var $this = $(this);
-                    $this.children('a').addClass('ui-state-hover');
                     
-                    $this.siblings('li').each(function() {
+                    // Hide any expanded submenus.
+                    $submenu.children('ul > li').each(function() {
                         var $this = $(this);
-                        var $a = $this.find('a');
-                        if ($a.hasClass('ui-state-active')) {
-                            $a.removeClass('ui-state-active');
-                            $this.find('ul').stop(true, false).slideUp(0);
+                        var $button = $this.find('a');
+                        if ($button.hasClass('ui-state-active')) {
+                            $button.removeClass('ui-state-active');
+                            $this.addClass('quick-hide');
+                            $this.find('ul').stop(true, true).hide();
                         }
                     });
                     
                 },
+                timeout: 1000
+            });
+            
+            // Hovering over the main menu.
+            $menu.find('.breeze-menu-main li').hover(
                 function() {
+                    /*
+                      Show a hover effect and handle the submenus
+                      when the hoverIntent plugin is lagging behind.
+                    */
+                    
+                    // Add the simple hover effect to the button.
+                    var $this = $(this);
+                    $this.children('a').addClass('ui-state-hover');
+                    
+                    // Hide any expanded submenus that are still open because
+                    // of the hoverIntent event handling.
+                    $this.siblings('li').each(function() {
+                        var $this = $(this);
+                        if ($this.find('ul').length) {
+                            var $button = $this.find('a');
+                            if ($button.hasClass('ui-state-active')) {
+                                $button.removeClass('ui-state-active');
+                                $this.addClass('quick-hide');
+                                $this.find('ul').stop(true, true).slideUp(50);
+                            }
+                        }
+                    });
+                    
+                    // Expand this submenu if this function was used to hide
+                    // it when a different menu item was hovered. This is
+                    // working around hoverIntent's delay.
+                    if ($this.hasClass('quick-hide')) {
+                        $this.find('a').addClass('ui-state-active');
+                        $this.find('ul').stop(true, true).slideDown(75);
+                    }
+                    
+                },
+                function() {
+                    /*
+                      Simply remove the button hover effect. HoverIntent will
+                      handle the closing of any remaining expanded submenus.
+                    */
                     var $this = $(this);
                     $this.children('a').removeClass('ui-state-hover');
                 }
             );
             
-            // Display the submenu when hovering intentionally.
+            // Hovering intentionally over the main menu.
             $menu.find('.breeze-menu-main li').hoverIntent({
                 over: function() {
+                    /* Expand the submenu, if it has one. */
                     var $this = $(this);
                     var $ul = $this.find('ul');
                     if ($ul.length) {
                         $this.find('a').addClass('ui-state-active');
-                        $this.find('ul').stop(true, false).slideDown(75);
+                        $this.find('ul').stop(true, true).slideDown(75);
                     }
                 },
                 out: function() {
+                    /* Collapse the submenu, if it has one. */
                     var $this = $(this);
                     var $ul = $this.find('ul');
                     if ($ul.length) {
-                        var $a = $this.find('a');
-                        if ($a.hasClass('ui-state-active')) {
-                            $a.removeClass('ui-state-active');
-                            $this.find('ul').stop(true, false).slideUp(50);
+                        var $button = $this.find('a');
+                        if ($button.hasClass('ui-state-active')) {
+                            $button.removeClass('ui-state-active');
+                            $this.find('ul').stop(true, true).slideUp(50);
                         }
+                        $this.removeClass('quick-hide');
                     }
                 },
+                interval: 10,
                 timeout: 2000
             });
             
@@ -113,38 +157,6 @@ $(document).ready(function() {
             position: ['left', 'top'],
             title: 'Basic Dialog'
         });
-    
-    var renderPage = function(data) {
-        
-        
-        $dialog.dialog('open');
-        
-        
-        
-        //$('div.page.container').empty();
-        //
-        //$(data).each(function() {
-        //    
-        //    var title = this.title
-        //    var content = this.content
-        //    
-        //    
-        //    alert(title );
-        //});
-        
-        
-    }
-    
-    
-    $.ajax({
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert('Error during fetch of page templates.\n' + errorThrown);
-        },
-        success: function(data, textStatus, jqXHR) {
-            renderPage(data.pages[0]);
-        },
-        url: '/static/breeze/page-templates.json'
-    });
     */
     
 })
