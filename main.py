@@ -31,7 +31,10 @@ if __name__ == '__main__':
 
     # Parse the options.
     parse_config_file(os.path.join(root_dir, 'defaults.conf'))
-    parse_config_file(os.path.join(root_dir, 'server.conf'))
+    try:
+        parse_config_file(os.path.join(root_dir, 'server.conf'))
+    except IOError:
+        pass
     parse_command_line()
 
     # Define the settings.
