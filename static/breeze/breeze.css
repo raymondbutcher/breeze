@@ -33,6 +33,12 @@
     margin-right: 2px;
 }
 
+.nolink {
+    cursor: default !important;
+}
+
+
+/* Tweaks for jquery-ui */
 .ui-dialog,
 .ui-tabs {
     font-size: 0.65em;
@@ -42,31 +48,41 @@
     margin: 16px 24px 16px 16px;
 }
 
-#breeze-admin ul.ui-tabs-nav a {
-    line-height: 16px;
-    padding-left: .5em;
+
+/* Admin menu */
+.breeze-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 !important;
 }
-#breeze-admin ul.ui-tabs-nav span {
-    float: left;
+.breeze-menu ul {
+    list-style: none;
+}
+.breeze-menu ul.start {
+    padding: 0 !important;
 }
 
-#breeze-admin div.ui-tabs-panel li {
-    display: block;
-    float: left;
-    list-style: none;
-    margin-right: 1em;
+.breeze-menu-off li.start {
+    margin-left: 3px !important;
 }
-#breeze-admin div.ui-tabs-panel .ui-button {
-    display: block;
-    float: left;
-    font-size: 1.1em;
-    line-height: 1.5em;
-    cursor: pointer;
-    padding: 0.3em 0.6em;
+.breeze-menu-off li.start span {
+    margin-top: 4px;
 }
-#breeze-admin div.ui-tabs-panel .ui-icon {
-    float: left;
-    margin-right: 2px;
+.breeze-menu-off a {
+    border-top: none !important;
+}
+
+.breeze-menu-main ul {
+    position: absolute !important;
+    top: 27px;
+    left: 0;
+    padding: 0.75em !important;
+}
+.breeze-menu-main ul li {
+    white-space: nowrap;
+    float: none !important;
 }
 
 

@@ -30,6 +30,7 @@ urls = (
 if __name__ == '__main__':
 
     # Parse the options.
+    parse_config_file(os.path.join(root_dir, 'defaults.conf'))
     parse_config_file(os.path.join(root_dir, 'server.conf'))
     parse_command_line()
 

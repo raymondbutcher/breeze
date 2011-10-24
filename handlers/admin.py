@@ -15,10 +15,6 @@ class AdminHandler(MongoHandler):
         if menu:
             return self.render_menu()
 
-        tab = self.get_argument('tab', None)
-        if tab:
-            return self.render_tab(tab)
-
         if self.get_argument('blank', False):
             return self.render('templates/base.html')
 
@@ -26,7 +22,3 @@ class AdminHandler(MongoHandler):
 
     def render_menu(self):
         self.render('templates/menu.html')
-
-    def render_tab(self, tab):
-        self.write('TODO: %s' % tab)
-        #self.finish()

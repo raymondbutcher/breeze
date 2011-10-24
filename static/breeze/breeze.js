@@ -1,100 +1,103 @@
 $(document).ready(function() {
     
-    
-    
-    
-    
-    // Define the menu structure.
-    var menu_structure = [
-        {
-            title: 'Edit',
-            icon: 'ui-icon-pencil',
-            options: [
-                {title: '?????', icon: 'help'},
-            ]
+    $.ajax({
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Error during fetch of Breeze menu.\n' + errorThrown);
         },
-        {
-            title: 'Articles',
-            icon: 'ui-icon-document',
-            options: [
-                {title: 'Create Article', icons: {primary: 'ui-icon-document'}},
-                {title: 'Find Article', icons: {primary: 'ui-icon-search'}}
-            ]
-        },
-        {
-            title: 'Feeds',
-            icon: 'ui-icon-signal-diag',
-            options: [
-                {title: 'Create Feed', icons: {primary: 'ui-icon-signal-diag'}},
-                {title: 'Find Feed', icons: {primary: 'ui-icon-search'}}
-            ]
-        },
-        {
-            title: 'Users',
-            icon: 'ui-icon-person',
-            options: [
-                {title: 'Create User', icons: {primary: 'ui-icon-person'}},
-                {title: 'Create Group', icons: {primary: 'ui-icon-key'}},
-                {title: 'Find User', icons: {primary: 'ui-icon-search'}},
-                {title: 'Find Group', icons: {primary: 'ui-icon-search'}},
-            ]
-        },
-    ]
-    
-    // Create the menu elements.
-    var $menu = $('<div id="breeze-admin"><ul></ul></div');
-    var $tabs = $menu.find('ul');
-    
-    // Turn the menu structure into HTML elements.
-    $(menu_structure).each(function(index) {
-        var menu_id = 'breeze-admin-' + index;
-        var $tab = $('<li><a href="#' + menu_id + '"><span>' + this.title + '</span></a></li>');
-        if (this.icon) {
-            $tab.find('a').prepend($('<span class="ui-icon ' + this.icon + '"></span>'));
-        }
-        var $content = $('<div id="' + menu_id + '"><ul class="ui-helper-clearfix"></ul></div>');
-        $(this.options).each(function(index) {
-            var option_id = menu_id + '-' + index;
-            var $item = $('<li></li>');
-            $item.append($('<input type="radio" id="' + option_id + '" name="' + menu_id + '-options" />'));
-            $item.append($('<label for="' + option_id + '">' + this.title + '</label>'));
-            $item.find('#' + option_id).button({
-                icons: this.icons
+        success: function(data, textStatus, jqXHR) {
+            
+            // Insert the menu into the page, fading it in.
+            $menu = $(data);
+            $('body').prepend($menu);
+            $menu.find('li.start a').fadeTo(0, 0).fadeTo('slow', 1);
+            
+            // Simple hover effect for the start icon.
+            $menu.find('li.start').hover(
+                function() {
+                    $(this).children('a').addClass('ui-state-hover');
+                },
+                function() {
+                    $(this).children('a').removeClass('ui-state-hover');
+                }
+            );
+            
+            // Display the main menu when hovering intentionally.
+            $menu.find('li.start').hoverIntent({
+                over: function() {
+                    var $this = $(this);
+                    var $menu = $this.parents('.breeze-menu');
+                    $menu.addClass('ui-widget ui-tabs-collapsible');
+                    $menu.removeClass('breeze-menu-off');
+                    var $submenu = $this.children('ul');
+                    $submenu.addClass('ui-helper-clearfix')
+                    $submenu.removeClass('ui-helper-hidden');
+                    var $button = $this.children('a');
+                    $button.addClass('ui-helper-hidden');
+                },
+                out: function() {
+                    var $this = $(this);
+                    var $menu = $this.parents('.breeze-menu');
+                    $menu.addClass('breeze-menu-off');
+                    $menu.removeClass('ui-widget ui-tabs-collapsible');
+                    var $submenu = $this.children('ul');
+                    $submenu.removeClass('ui-helper-clearfix')
+                    $submenu.addClass('ui-helper-hidden');
+                    var $button = $this.children('a');
+                    $button.removeClass('ui-helper-hidden');
+                },
+                timeout: 500
             });
-            $content.find('ul').append($item);
-        });
-        $tabs.append($tab);
-        $menu.append($content);
+            
+            // Simple hover effect for menu icons, plus hiding submenus
+            // immediately when switching between menus.
+            $menu.find('.breeze-menu-main li').hover(
+                function() {
+                    var $this = $(this);
+                    $this.children('a').addClass('ui-state-hover');
+                    
+                    $this.siblings('li').each(function() {
+                        var $this = $(this);
+                        var $a = $this.find('a');
+                        if ($a.hasClass('ui-state-active')) {
+                            $a.removeClass('ui-state-active');
+                            $this.find('ul').stop(true, false).slideUp(0);
+                        }
+                    });
+                    
+                },
+                function() {
+                    var $this = $(this);
+                    $this.children('a').removeClass('ui-state-hover');
+                }
+            );
+            
+            // Display the submenu when hovering intentionally.
+            $menu.find('.breeze-menu-main li').hoverIntent({
+                over: function() {
+                    var $this = $(this);
+                    var $ul = $this.find('ul');
+                    if ($ul.length) {
+                        $this.find('a').addClass('ui-state-active');
+                        $this.find('ul').stop(true, false).slideDown(75);
+                    }
+                },
+                out: function() {
+                    var $this = $(this);
+                    var $ul = $this.find('ul');
+                    if ($ul.length) {
+                        var $a = $this.find('a');
+                        if ($a.hasClass('ui-state-active')) {
+                            $a.removeClass('ui-state-active');
+                            $this.find('ul').stop(true, false).slideUp(50);
+                        }
+                    }
+                },
+                timeout: 2000
+            });
+            
+        },
+        url: '/admin/?menu=gotime'
     });
-    
-    // Turn the menu into a ui-tabs widget.
-    $menu.tabs({
-        collapsible: true,
-        selected: -1
-    });
-    
-    // Add the menu to the top of the page.
-    $('body').prepend($menu);
-    
-    
-    
-    
-    
-    //$.ajax({
-    //    error: function(jqXHR, textStatus, errorThrown) {
-    //        alert('Error during fetch of Breeze menu.\n' + errorThrown);
-    //    },
-    //    success: function(data, textStatus, jqXHR) {
-    //        var $menu = $(data)
-    //        $menu.tabs({
-    //            collapsible: true,
-    //            selected: -1
-    //        });
-    //        $menu.find('.button').button()
-    //        $('body').prepend($menu);
-    //    },
-    //    url: '/admin/?menu=1'
-    //});
     
     /*
     var $dialog = $('<div></div>')
