@@ -30,7 +30,6 @@ class MongoHandler(ErrorHandler):
                 dbuser=options.mongo_dbuser,
                 dbpass=options.mongo_dbpass,
             )
-            print options.mongo_host, options.mongo_port
         return self._db
 
     def get_mongo_result(self, gen_result, allow_none=False):

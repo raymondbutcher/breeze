@@ -32,61 +32,82 @@
         </div>
         {% end %}
         <script type="text/javascript" src="{{ static_url("scriptjs/script.min.js") }}"></script>
+        <script type="text/javascript" src="{{ static_url("breeze/scripts.js") }}"></script>
         <script type="text/javascript">
             
-            var $scripts = {
-                registry: {
-                    'breeze-admin': {
-                        path: '{{ static_url("breeze/admin.js") }}'
-                    },
-                    'cookie': {
-                        path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}',
-                        requires: 'jquery'
-                    },
-                    'hoverIntent': {
-                        path: '{{ static_url("jquery/hoverIntent/jquery.hoverIntent.minified.js") }}',
-                        requires: 'jquery'
-                    },
-                    'jquery': {
-                        path: '{{ static_url("jquery/1.6.4/jquery.min.js") }}'
-                    },
-                    'jquery-ui': {
-                        path: '{{ static_url("jquery-ui/1.8.16/js/jquery-ui.min.js") }}',
-                        requires: 'jquery'
-                    }
+            $scripts.register({
+                'breeze-admin': {
+                    path: '{{ static_url("breeze/admin.js") }}'
                 },
-                load: function(scriptName) {
-                    /* Load a script by name */
-                    var script = $scripts.registry[scriptName];
-                    if (script.requires) {
-                        $script.ready(script.requires, function() {
-                            $script(script.path, scriptName);
-                        }, $scripts.loadMissing);
-                    } else {
-                        $script(script.path, scriptName);
-                    }
+                'jquery': {
+                    path: '{{ static_url("jquery/1.6.4/jquery.min.js") }}'
                 },
-                loadMissing: function(missingList) {
-                    /* Automatically load required scripts */
-                    missingList.forEach(function(requiredScript) {
-                        $scripts.load(requiredScript);
-                    });
+                'cookie': {
+                    path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}',
+                    requires: 'jquery'
                 },
-                ready: function(requiredScripts, callback) {
-                    /*
-                      Runs a function when the required scripts have been
-                      loaded. Automatically loads the scripts and handles
-                      all dependencies as defined in the registry.
-                    */
-                    $script.ready(requiredScripts, callback, $scripts.loadMissing);
+                'hoverIntent': {
+                    path: '{{ static_url("jquery/hoverIntent/jquery.hoverIntent.minified.js") }}',
+                    requires: 'jquery'
+                },
+                'jquery-ui': {
+                    path: '{{ static_url("jquery-ui/1.8.16/js/jquery-ui.min.js") }}',
+                    requires: 'jquery'
                 }
-            }
+            });
             
             $scripts.ready('cookie', function() {
                 if ($.cookie('auth_staff') || $.cookie('auth_superuser')) {
                     $scripts.load('breeze-admin');
                 }
             });
+            
+            
+            
+            /*
+            $scripts.ready(['jquery', 'jquery-ui'], function() {
+                
+                $('.container .row').each(function() {
+                    var $row = $(this);
+                    $row.find('.column').each(function(index) {
+                        var $column = $(this);
+                        $column.wrapInner('<div class="breeze-edit ui-helper-clearfix ui-resizable-helper"></div>');
+                        var handles;
+                        if (index == 0) {
+                            handles = 'e';
+                        } else if ($column.hasClass('last')) {
+                            handles = 'w';
+                        } else {
+                            handles = 'e, w';
+                        }
+                        var $edit = $column.find('.breeze-edit');
+                        $edit.resizable({
+                            containment: $row,
+                            grid: 150,
+                            handles: handles,
+                            resize: function(event, ui) {
+                                $edit.css({
+                                    width: '',
+                                    height: '',
+                                    top: '',
+                                    left: ''
+                                });
+                            },
+                            stop: function(event, ui) {
+                                $edit.css({
+                                    width: '',
+                                    height: '',
+                                    top: '',
+                                    left: ''
+                                });
+                            }
+                        })
+                    });
+                });
+                
+            });
+            */
+            
             
         </script>
         <script type="text/javascript" src="{{ static_url("css3-mediaqueries/2010-03-01/css3-mediaqueries.js") }}"></script>

@@ -43,9 +43,11 @@
 .ui-tabs {
     font-size: 0.65em;
 }
-
 .ui-dialog {
     margin: 16px 24px 16px 16px;
+}
+.ui-resizable-helper {
+    border: 1px dotted gray;
 }
 
 
@@ -86,6 +88,7 @@
 }
 
 
+
 /* ============================= */
 /* ! Layout for mobile version   */
 /* ============================= */
@@ -94,6 +97,11 @@
 
     body {
             
+    }
+
+    .breeze-edit {
+        border: none;
+        margin: 0;
     }
 
 }

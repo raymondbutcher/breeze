@@ -9,11 +9,26 @@ The general plan is to:
    using only the platform's interface.
 2. Keep enhancing it with any new features and ideas that come up.
 
-I do not wish to plan this in-depth at this point, because seeing all of the
-requirements in one document would kill my motivation.
+I do not wish to plan anything in-depth at this point, because seeing all
+of the requirements in one document would kill my motivation.
 
 Some overall goals include:
 
-* Allow building dynamic pages via a JavaScript interface.
-* Allow flexible lists of various content types.
-* Allow commenting on everything.
+* In-page admin interface using JavaScript
+ * No admin URL, it's all through the main site
+ * Inline editing of everything that is stored in the datase
+ * Dialog boxes for editing non-public objects/data
+ * Allow building dynamic pages via a JavaScript interface
+  * Developing this will be complicated
+
+* Allow flexible lists/feeds of various content types
+
+* Core content types might include:
+ * Page
+ * Auth (users/groups)
+ * Comments ? What about disqus or something?
+
+* Some kind of app/plugin architecture
+ * Articles
+ * Forums
+ * Github (to show latest commits, tickets, etc)
