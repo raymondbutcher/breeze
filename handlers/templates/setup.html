@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Breeze Setup{% end %}
+
+{% block content %}
+    <div class="page container">
+        <div class="row">
+            <div class="column twelvecol last">
+                <h1>Breeze Setup</h1>
+                <hr/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column twelvecol last">
+                <h2>Set superuser</h2>
+                <p>Create or update a user with superuser privileges.</p>
+                <form action="/" method="POST" name="superuser">
+                    <label for="superuser_name">Name:</label>
+                    <input type="text" name="superuser_name" id="superuser_name"/>
+                    <label for="superuser_email">Email:</label>
+                    <input type="text" name="superuser_email" id="superuser_email"/>
+                    <input type="submit"/>
+                    {% if superuser %}Superuser {{ superuser }}!{% end %}
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column twelvecol last">
+                <hr/>
+            </div>
+        </div>
+    </div>
+{% end%}
