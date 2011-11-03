@@ -31,11 +31,10 @@
             </div>
         </div>
         {% end %}
-        <script type="text/javascript" src="{{ static_url("scriptjs/script.min.js") }}"></script>
-        <script type="text/javascript" src="{{ static_url("breeze/scripts.js") }}"></script>
+        <script type="text/javascript" src="{{ static_url("breeze/deps.js") }}"></script>
         <script type="text/javascript">
             
-            $scripts.register({
+            $deps.register({
                 'breeze-admin': {
                     path: '{{ static_url("breeze/admin.js") }}'
                 },
@@ -43,73 +42,72 @@
                     path: '{{ static_url("jquery/1.6.4/jquery.min.js") }}'
                 },
                 'cookie': {
-                    path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}',
-                    requires: 'jquery'
+                    requires: 'jquery',
+                    path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}'
                 },
                 'hoverIntent': {
-                    path: '{{ static_url("jquery/hoverIntent/jquery.hoverIntent.minified.js") }}',
-                    requires: 'jquery'
+                    requires: 'jquery',
+                    path: '{{ static_url("jquery/hoverIntent/jquery.hoverIntent.minified.js") }}'
                 },
                 'jquery-ui': {
-                    path: '{{ static_url("jquery-ui/1.8.16/js/jquery-ui.min.js") }}',
-                    requires: 'jquery'
+                    requires: 'jquery',
+                    path: '{{ static_url("jquery-ui/1.8.16/js/jquery-ui.min.js") }}'
+                },
+                'aloha': {
+                    requires: 'aloha-setup',
+                    path: '{{ static_url("aloha/lib/aloha.js") }}',
+                    attrs: {
+                        'data-aloha-plugins': 'common/format,common/list,common/table'
+                    }
+                },
+                'aloha-setup': {
+                    requires: 'jquery',
+                    path: [
+                        '{{ static_url("breeze/aloha.js") }}',
+                        '{{ static_url("aloha/css/aloha.css") }}'
+                    ]
                 }
             });
-            
-            $scripts.ready('cookie', function() {
-                if ($.cookie('auth_staff') || $.cookie('auth_superuser')) {
-                    $scripts.load('breeze-admin');
-                }
-            });
-            
-            
-            
-            /*
-            $scripts.ready(['jquery', 'jquery-ui'], function() {
-                
-                $('.container .row').each(function() {
-                    var $row = $(this);
-                    $row.find('.column').each(function(index) {
-                        var $column = $(this);
-                        $column.wrapInner('<div class="breeze-edit ui-helper-clearfix ui-resizable-helper"></div>');
-                        var handles;
-                        if (index == 0) {
-                            handles = 'e';
-                        } else if ($column.hasClass('last')) {
-                            handles = 'w';
-                        } else {
-                            handles = 'e, w';
-                        }
-                        var $edit = $column.find('.breeze-edit');
-                        $edit.resizable({
-                            containment: $row,
-                            grid: 150,
-                            handles: handles,
-                            resize: function(event, ui) {
-                                $edit.css({
-                                    width: '',
-                                    height: '',
-                                    top: '',
-                                    left: ''
-                                });
-                            },
-                            stop: function(event, ui) {
-                                $edit.css({
-                                    width: '',
-                                    height: '',
-                                    top: '',
-                                    left: ''
-                                });
-                            }
-                        })
-                    });
-                });
-                
-            });
-            */
-            
             
         </script>
+        
+        <script type="text/javascript">
+            $deps.ready('cookie', function() {
+                if ($.cookie('auth_staff') || $.cookie('auth_superuser')) {
+                    $deps.load('breeze-admin');
+                }
+            });
+        </script>
+        
+        
+        
+        
+        <style type="text/css">
+            
+            
+            
+            .breeze-edit-panel {
+                position: absolute;
+                border: grey dotted 2px;
+            }
+            
+            .breeze-edit-panel.aloha {
+                z-index: -1;
+                border: solid 14px yellow;
+            }
+            
+            .breeze-resize {
+                position: absolute;
+                border: grey dotted 2px;
+            }
+            
+            .breeze-resize-hover {
+                background: skyblue;
+                border-width: 2px 4px;
+                border-style: solid double;
+            }
+            
+        </style>
         <script type="text/javascript" src="{{ static_url("css3-mediaqueries/2010-03-01/css3-mediaqueries.js") }}"></script>
     </body>
 </html>

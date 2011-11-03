@@ -1,5 +1,5 @@
-$scripts.ready(['jquery', 'jquery-ui', 'hoverIntent'], function() {
-
+$deps.ready(['jquery', 'jquery-ui', 'hoverIntent'], function() {
+    
     $.ajax({
         error: function(jqXHR, textStatus, errorThrown) {
             alert('Error during fetch of Breeze menu.\n' + errorThrown);
@@ -158,4 +158,102 @@ $scripts.ready(['jquery', 'jquery-ui', 'hoverIntent'], function() {
 
 
 
+});
+
+$deps.ready('aloha', function() {
+    
+    var $body = $('body');
+    var $document = $(document);
+    var hoverLock = false;
+    
+    $('.container .row .column').each(function() {
+        
+        var $column = $(this);
+        var $otherColumns = $('.container .row .column').not(this);
+        
+        // Create an edit panel to overlay this column.
+        var $editPanel = $('<div class="breeze-edit-panel"></div>');
+        
+        var editPanelPadding = 10;
+        
+        var resizeEditPanel = function() {
+            var coords = $column.offset();
+            
+            var borderTop = parseInt($editPanel.css('border-top-width')) || 0,
+                borderBottom = parseInt($editPanel.css('border-bottom-width')) || 0,
+                borderLeft = parseInt($editPanel.css('border-left-width')) || 0,
+                borderRight = parseInt($editPanel.css('border-right-width')) || 0;
+            
+            
+            var top = Math.max(0, coords.top - editPanelPadding - borderTop);
+            var left = Math.max(0, coords.left - editPanelPadding - borderLeft)
+            
+            
+            console.log([left, coords.left, editPanelPadding, borderLeft]);
+            
+            var width = $column.outerWidth() + editPanelPadding * 2;
+            width = Math.min(width, $document.width() - left - borderLeft - borderRight);
+            var height = $column.outerHeight() + editPanelPadding * 2;
+            height = Math.min(height, $document.height() - top - borderTop - borderBottom);
+            $editPanel.css({
+                'top': top,
+                'left': left,
+                'width': width,
+                'height': height
+            });
+        }
+        $(window).resize(function() {
+            resizeEditPanel();
+        });
+        resizeEditPanel();
+        
+        $column.data('hoverCount', 0);
+        function handleHover(delta) {
+            if (hoverLock) {
+                return
+            }
+            var hoverCount = $column.data('hoverCount');
+            if (!hoverCount && delta > 0) {
+                $otherColumns.stop(true).fadeTo(100, 0.1);
+                $otherColumns.data('hoverCount', 0);
+                $editPanel.appendTo($body);
+            } else if (hoverCount && delta < 0) {
+                $otherColumns.stop(true).fadeTo(100, 1);
+                $editPanel.detach();
+            }
+            $column.data('hoverCount', hoverCount + delta);
+        }
+        
+        $column.hover(function() {
+            handleHover(1);
+        }, function() {
+            handleHover(-1);
+        });
+        
+        $editPanel.hover(function() {
+            handleHover(1);
+        }, function() {
+            handleHover(-1);
+        })
+        
+        $editPanel.dblclick(function(evt) {
+            hoverLock = true;
+            setTimeout((function(){
+                
+                $editPanel.detach();
+                Aloha.jQuery($column.get(0)).aloha();
+                $editPanel.appendTo($body).addClass('aloha');
+                resizeEditPanel();
+                
+                
+                
+                //GENTICS.Utils.Dom.selectDomNode($column.get(0));
+                
+                //Aloha.jQuery($column.get(0)).mahalo();
+            }), 5);
+        });
+        
+        
+        
+    });
 });
