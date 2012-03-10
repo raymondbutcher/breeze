@@ -27,7 +27,7 @@ class PageHandler(MongoHandler):
     @tornado.web.addslash
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def get(self, path):
+    def get(self, path=''):
         path = '/%s' % path
         result = yield tornado.gen.Task(self.db.pages.find_one, {'path': path})
         context = {

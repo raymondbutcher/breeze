@@ -1,5 +1,6 @@
 import tornado.web
 
+
 class PageContent(tornado.web.UIModule):
     def render(self, content):
         if isinstance(content, dict):

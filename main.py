@@ -24,7 +24,7 @@ urls = (
     (r'/admin/', AdminHandler),
     (r'/auth/google/', AuthGoogleHandler),
     (r'/auth/logout/', AuthLogoutHandler),
-    (r'/create-fake/', FakePageHandler), # TODO: Delete this, it sucks and I hate it.
+    (r'/create-fake/', FakePageHandler),  # TODO: Delete this, it sucks and I hate it.
     (r'/(.*)', PageHandler),
     (r'/', PageHandler),
 )
@@ -33,17 +33,17 @@ urls = (
 if __name__ == '__main__':
 
     # Parse the options.
-    parse_config_file(os.path.join(root_dir, 'defaults.conf'))
+    parse_config_file(os.path.join(root_dir, 'options.conf'))
     parse_command_line()
     if options.settings:
         # Import the settings from the provided settings module.
-        current_settings = __import__(name='breeze.settings', fromlist=['*'])
+        current_settings = __import__(name=options.settings, fromlist=['*'])
         for name in dir(current_settings):
             if name in options:
                 value = getattr(current_settings, name)
                 option = options[name]
                 option.set(value)
-        # Parse the command line again as they have top priority.
+        # Parse the command line again as it has top priority.
         parse_command_line()
 
     # Define the settings.
@@ -59,6 +59,6 @@ if __name__ == '__main__':
         urls = [(r'.*', SetupHandler)]
 
     # Create and run the application server.
-    application = Application(urls, **settings)    
+    application = Application(urls, **settings)
     application.listen(options.listen_port, address=options.listen_address)
     IOLoop.instance().start()

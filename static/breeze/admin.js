@@ -1,15 +1,16 @@
 $deps.ready(['jquery', 'jquery-ui', 'hoverIntent'], function() {
     
     $.ajax({
+        url: '/admin/',
         error: function(jqXHR, textStatus, errorThrown) {
             alert('Error during fetch of Breeze menu.\n' + errorThrown);
         },
         success: function(data, textStatus, jqXHR) {
             
-            // Insert the menu into the page, fading it in.
+            // Insert the menu into the page.
             $menu = $(data);
             $('body').prepend($menu);
-            $menu.find('li.start a').fadeTo(0, 0).fadeTo('slow', 1);
+            $menu.find('li.start a').show();
             
             // Hovering over the start button.
             $menu.find('li.start').hover(
@@ -128,8 +129,7 @@ $deps.ready(['jquery', 'jquery-ui', 'hoverIntent'], function() {
                 timeout: 900 // Must be slightly less than the main menu timeout.
             });
             
-        },
-        url: '/admin/'
+        }
     });
     
     /*
@@ -184,12 +184,8 @@ $deps.ready('aloha', function() {
                 borderLeft = parseInt($editPanel.css('border-left-width')) || 0,
                 borderRight = parseInt($editPanel.css('border-right-width')) || 0;
             
-            
             var top = Math.max(0, coords.top - editPanelPadding - borderTop);
             var left = Math.max(0, coords.left - editPanelPadding - borderLeft)
-            
-            
-            console.log([left, coords.left, editPanelPadding, borderLeft]);
             
             var width = $column.outerWidth() + editPanelPadding * 2;
             width = Math.min(width, $document.width() - left - borderLeft - borderRight);
@@ -201,6 +197,8 @@ $deps.ready('aloha', function() {
                 'width': width,
                 'height': height
             });
+            
+            return true;
         }
         $(window).resize(function() {
             resizeEditPanel();
@@ -224,31 +222,56 @@ $deps.ready('aloha', function() {
             $column.data('hoverCount', hoverCount + delta);
         }
         
-        $column.hover(function() {
-            handleHover(1);
-        }, function() {
-            handleHover(-1);
+        $.each([$column, $editPanel], function(index, $this) {
+            $this.hover(function() {
+                handleHover(1);
+            }, function() {
+                handleHover(-1);
+            });
         });
-        
-        $editPanel.hover(function() {
-            handleHover(1);
-        }, function() {
-            handleHover(-1);
-        })
         
         $editPanel.dblclick(function(evt) {
             hoverLock = true;
             setTimeout((function(){
                 
+                // Remove the edit panel while initializing the Aloha editor.
                 $editPanel.detach();
+                
+                // Make the column editable with Aloha.
                 Aloha.jQuery($column.get(0)).aloha();
-                $editPanel.appendTo($body).addClass('aloha');
+                
+                // Add the edit panel again, with an extra class. Resize it
+                // so the new border sizes are taken into account.
+                $editPanel.appendTo($body).addClass('breeze-edit-panel-aloha');
                 resizeEditPanel();
                 
+                // Add some event handlers so that the edit panel is resized
+                // automatically when the content is changed.
+                Aloha.bind('aloha-smart-content-changed', function(jevent, aevent) {
+                    resizeEditPanel();
+                });
+                jQuery(document).keyup(function(event) {
+                    resizeEditPanel();
+                });
                 
+                
+                var $dialog = $('<div></div>')
+                .html('Something something')
+                .dialog({
+                    //autoOpen: false,
+                    buttons: {
+                        'OK': function() {
+                            $(this).dialog("close");
+                        }
+                    },
+                    //modal: true,
+                    position: ['left', 'top']
+                    //,
+                    //title: 'Basic Dialog'
+                });
+
                 
                 //GENTICS.Utils.Dom.selectDomNode($column.get(0));
-                
                 //Aloha.jQuery($column.get(0)).mahalo();
             }), 5);
         });

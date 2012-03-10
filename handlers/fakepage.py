@@ -6,7 +6,8 @@ from breeze.handlers.mongo import MongoHandler
 
 class FakePageHandler(MongoHandler):
 
-    def _get_fake_page(self, path):
+    @staticmethod
+    def _get_fake_page(path):
         return {
             'id': 1,
             'path': path,
@@ -26,12 +27,12 @@ background-image: -webkit-linear-gradient(right bottom, rgb(0,164,209) 57%, rgb(
 background-image: -ms-linear-gradient(right bottom, rgb(0,164,209) 57%, rgb(4,132,217) 46%, rgb(252,252,252) 100%);
 
 background-image: -webkit-gradient(
-	linear,
-	right bottom,
-	left top,
-	color-stop(0.57, rgb(0,164,209)),
-	color-stop(0.46, rgb(4,132,217)),
-	color-stop(1, rgb(252,252,252))
+    linear,
+    right bottom,
+    left top,
+    color-stop(0.57, rgb(0,164,209)),
+    color-stop(0.46, rgb(4,132,217)),
+    color-stop(1, rgb(252,252,252))
 );
 
 -webkit-border-radius: 10px;

@@ -3,8 +3,6 @@ import tornado.escape
 import tornado.gen
 import tornado.web
 
-from tornado.options import options
-
 from breeze.handlers.error import ErrorHandler
 from breeze.handlers.mongo import MongoHandler
 
@@ -42,6 +40,7 @@ class AuthHandler(ErrorHandler):
 
 
 class AuthLogoutHandler(AuthHandler):
+
     def get(self):
         """Log the user out and redirect to the 'next' page or homepage."""
         self.clear_auth_cookies()
@@ -65,7 +64,7 @@ class AuthGoogleHandler(AuthHandler, MongoHandler, tornado.auth.GoogleMixin):
                     self.db.users.update,
                     spec={'email': data['email']},
                     document={'$set': data},
-                    upsert=True
+                    upsert=True,
                 )
 
                 # Get the user data, so we can see if they are an admin user.

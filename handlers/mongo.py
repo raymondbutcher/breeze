@@ -32,7 +32,8 @@ class MongoHandler(ErrorHandler):
             )
         return self._db
 
-    def get_mongo_result(self, gen_result, allow_none=False):
+    @staticmethod
+    def get_mongo_result(gen_result, allow_none=False):
         args, kwargs = gen_result
         result, error = (lambda results, error=None: (results[0], error))(args, **kwargs)
         if error:
