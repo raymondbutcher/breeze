@@ -6,12 +6,13 @@
   "name": "Run", 
   "operateOnSelection": 0, 
   "value": [
-    "python main.py"
+    "python launch.py"
   ], 
-  "cwd": "%p", 
+  "parseOutput": 0, 
+  "version": "1.0.7", 
   "env": "", 
   "showParsedOutputList": 0, 
   "type": "command", 
-  "parseOutput": 0, 
+  "cwd": "%p", 
   "runIn": "command-output-window"
 }

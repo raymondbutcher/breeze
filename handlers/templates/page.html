@@ -3,12 +3,11 @@
 {% block title %}{{ page['title'] }}{% end %}
 
 {% block content %}
-    <div class="page container" id="page-{{ page['_id'] }}">
+    <div class="container-fluid" id="page-{{ page['_id'] }}">
         {% for row in page['structure'] %}
-        <div class="row">
-            {% set last_row = len(row) - 1 %}
-            {% for counter, column in enumerate(row) %}
-            <div class="column {{ get_css_class(column['colspan']) }}{% if counter == last_row %} last{% end %}">
+        <div class="row-fluid">
+            {% for column in row %}
+            <div class="span{{ column['colspan'] }}">
                 {% module PageContent(column['content']) %}
             </div>
             {% end %}

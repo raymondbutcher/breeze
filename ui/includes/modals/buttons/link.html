@@ -1,0 +1,10 @@
+<a  class="btn btn-primary"
+    {% if js and modal %}
+        href="{{ modal }}"
+        data-toggle="modal"
+        onclick="$(this).parents('.modal').modal('hide')"
+    {% else %}
+        href="/auth/register/?after={{ url_escape(after) }}"
+    {% end %}>
+    {% raw label %}
+</a>

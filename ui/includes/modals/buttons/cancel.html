@@ -1,0 +1,9 @@
+<a  class="btn" 
+    {% if js %}
+        href="#"
+        onclick="$(this).parents('.modal').modal('hide'); return false"
+    {% else %}
+        href="{{ after }}"
+    {% end %}>
+    {{ label }}
+</a>

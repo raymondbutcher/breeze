@@ -1,112 +1,126 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
+        <meta charset="utf-8">
         <title>{% block title %}...{% end %}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!--[if lte IE 9]><link rel="stylesheet" href="{{ static_url("cssgrid/ie.css") }}" type="text/css" media="screen" /><![endif]-->
-        <link rel="stylesheet" href="{{ static_url("cssgrid/1140.css") }}" type="text/css" media="screen" />
-        <link rel="stylesheet" href="{{ static_url("jquery-ui/1.8.16/cupertino/jquery-ui.css") }}" type="text/css" media="screen" />
-        <link rel="stylesheet" href="{{ static_url("breeze/breeze.css") }}" type="text/css" media="screen" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <!-- Styles -->
+        <link href="{{ static_url('bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+        <link href="{{ static_url('bootstrap/css/bootstrap-responsive.css') }}" rel="stylesheet">
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+            <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <!-- Fav and touch icons -->
+        <!--<link rel="shortcut icon" href="images/favicon.ico">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">-->
     </head>
-    <body>
-        {% block content %}
-        <div class="page container">
-            <div class="row">
-                <div class="twelvecol last">
-                    {% block simplecontent %}
-                    
-                    <p>Lorem ipsum dolor sit amet, blandit nec porttitor nibh sit fringilla, wisi inceptos, justo diam ac fringilla adipiscing nisl, nullam turpis torquent fusce. Sagittis id eleifend sed orci rhoncus hendrerit, est ipsum quis nunc tincidunt nisl dolor, ullamcorper urna in fringilla. Orci montes pellentesque sed consectetuer placerat pede, sit adipiscing sem mauris fringilla, vestibulum non aliquet, odio nullam. Viverra euismod mollis ullamcorper fringilla tempor cursus, est integer vivamus nullam et. Nec sit fusce, lectus hymenaeos aliquet nunc, amet hendrerit arcu semper. Ut dui nonummy, duis montes tellus. Adipiscing mi aliquet rhoncus quis porttitor mauris, nulla tortor dui proin, semper nulla morbi bibendum mauris at egestas, vehicula pellentesque sagittis tincidunt leo, est sed metus vestibulum orci amet. Neque nibh aenean vestibulum, ipsam sodales magna proin eros scelerisque dolor.</p>
-                    
-                    <p>Blandit justo consectetuer urna etiam sed. Auctor malesuada porttitor, vivamus enim erat cras imperdiet felis nunc. Proin ut dolor consequat nec donec varius, ut arcu integer, urna nunc aptent pede elementum pellentesque, dictum sed vel vestibulum pretium viverra. Mollis class aenean arcu vestibulum vestibulum, leo augue habitant fusce non nec, felis vestibulum donec pellentesque orci tincidunt. Dui sed. Non ultricies eros magna. Dictumst amet vulputate ultrices etiam ante, nec in justo sit neque, vitae vestibulum rhoncus, et lacus suspendisse, posuere aliquam dicta ut eu. Justo nunc consectetuer elit scelerisque, montes blandit porta suspendisse mattis, nonummy donec lorem neque, amet sapien sem. Aenean venenatis egestas dignissim, libero eu odio condimentum nec non libero. Bibendum vitae, voluptatem blandit curabitur amet mauris cursus ac, odio orci vitae non lectus, lobortis ullamcorper duis volutpat vitae vehicula, mi pellentesque amet in ut mauris id. Curabitur tempus, mattis imperdiet pellentesque non convallis et, lectus nonummy dignissim purus.</p>
-                    
-                    <p>Arcu facilisi pellentesque potenti purus bibendum nec, porttitor fusce magna justo, in sit quis dui imperdiet, montes blandit sagittis, facilisis integer cum vitae senectus. Ligula feugiat suscipit leo lorem, aenean id, et augue vestibulum purus aliquam justo et, urna cras lacinia tempus blandit, enim aliquam. Odio aenean mi, pede donec eos auctor, risus ante mus, metus gravida erat integer dolore odio. Vitae mollis in convallis. Vivamus purus, sed officia pede tristique bibendum molestie, ut rhoncus enim orci, suscipit nostra vestibulum justo sem, interdum massa nec rhoncus et wisi nunc. Eros turpis, nam velit. Massa phasellus, sapien id nulla, nam nunc dapibus euismod, suspendisse nulla, soluta ac quis senectus.</p>
-                    
-                    <p>At erat aenean ipsum tellus. Urna malesuada nisl, in tempor nec. Sit magna luctus nullam, ac vestibulum et lacinia tristique, amet velit vestibulum mauris accumsan. Eu quis mauris nulla placerat, tempor placerat sagittis pellentesque justo incididunt, et purus. Eu lorem, porta enim natoque sapiente pulvinar. Convallis aliquam. Ridiculus massa mi nonummy nunc, magna pretium eget ac, leo egestas maecenas, ac dolor odio mauris suspendisse. Nullam justo et dis per, sed sed enim eget phasellus et, egestas ipsum morbi pede ut nibh. Nullam curabitur vestibulum parturient convallis, tellus egestas faucibus vehicula. Id lectus nibh facilisis, in vehicula ut tellus porta, arcu turpis quos magna, nec viverra litora, enim nec.</p>
-                    
-                    <p>Lectus tincidunt lobortis wisi, dui porttitor vulputate dolor, eget justo justo, ut lorem vitae ipsum ligula. Sollicitudin euismod, vel neque felis in curabitur condimentum, non nunc inceptos consequat felis bibendum at. A cursus vehicula odio consectetuer, sed non, dui in ligula eros, convallis proin, massa ut iaculis sodales ligula sed eleifend. Lectus ipsum vitae nullam massa interdum, facere varius metus pellentesque viverra arcu suscipit, in sed erat corporis, euismod sit nunc tellus ut volutpat pellentesque. Arcu lorem etiam, cras duis nulla pede, vel quaerat in. Pharetra velit vivamus, et est risus aenean aliquam, nunc dolor, vestibulum volutpat, mattis consequat. Egestas mauris, fringilla dolor metus neque. Sed et, vel ipsum vel mi proin massa malesuada. Purus mauris felis. Posuere nonummy diam amet elit, aliquam ligula. Cras sagittis enim quis sed ultricies. Suspendisse congue, pulvinar est cras sed molestie magna placerat, dignissim at dolor, aliquam sed laoreet cras congue.</p>
-                    
-                    {% end %}
+
+    <body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/#">Breeze Website Platform</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li{% if request.path == '/' %} class="active"{% end %}><a href="/#">About</a></li>
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li class="dropdown" id="sign-in-dropdown">
+                            <a href="/auth/?after={{ url_escape(request.uri) }}"
+                               class="dropdown-toggle"
+                               data-toggle="dropdown"
+                               data-target="#sign-in-dropdown">
+                                {% if current_user %}
+                                {{ current_user }}
+                                {% else %}
+                                Sign in
+                                {% end %}
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% if current_user %}
+                                    <!--<li class="divider"></li>-->
+                                    <li><a href="/auth/logout/?after={{ url_escape(request.uri) }}">Log out</a></li>
+                                {% else %}
+                                    <li><a href="/auth/google/?after={{ url_escape(request.uri) }}">Sign in using Google</a></li>
+                                    {% block register-link %}
+                                        <li class="divider"></li>
+                                        <li><a href="#sign-in" data-toggle="modal">Register</a></li>
+                                    {% end %}
+                                {% end %}
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        {% end %}
-        <script type="text/javascript" src="{{ static_url("breeze/deps.js") }}"></script>
-        <script type="text/javascript">
-            
-            $deps.register({
-                'breeze-admin': {
-                    path: '{{ static_url("breeze/admin.js") }}'
-                },
-                'jquery': {
-                    path: '{{ static_url("jquery/1.6.4/jquery.min.js") }}'
-                },
-                'cookie': {
-                    requires: 'jquery',
-                    path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}'
-                },
-                'hoverIntent': {
-                    requires: 'jquery',
-                    path: '{{ static_url("jquery/hoverIntent/jquery.hoverIntent.minified.js") }}'
-                },
-                'jquery-ui': {
-                    requires: 'jquery',
-                    path: '{{ static_url("jquery-ui/1.8.16/js/jquery-ui.min.js") }}'
-                },
-                'aloha': {
-                    requires: 'aloha-setup',
-                    path: '{{ static_url("aloha/lib/aloha.js") }}',
-                    attrs: {
-                        'data-aloha-plugins': 'common/format,common/list,common/table'
-                    }
-                },
-                'aloha-setup': {
-                    requires: 'jquery',
-                    path: [
-                        '{{ static_url("breeze/aloha.js") }}',
-                        '{{ static_url("aloha/css/aloha.css") }}'
-                    ]
-                }
-            });
-            
-        </script>
-        
-        <script type="text/javascript">
-            $deps.ready('cookie', function() {
-                if ($.cookie('auth_staff') || $.cookie('auth_superuser')) {
-                    $deps.load('breeze-admin');
-                }
-            });
-        </script>
-        
-        <style type="text/css">
-            
-            .breeze-edit-panel {
-                position: absolute;
-                border: grey dotted 2px;
-                -webkit-border-radius: 5px;
-                -moz-border-radius: 5px;
+    </div>
+
+    {% block register-modals %}
+        {% module SignInModal(after=request.uri, js=True, id="sign-in") %}
+        {% module RegisterModal(after=request.uri, js=True, id="register") %}
+    {% end %}
+
+    {% block content %}
+    <div class="container-fluid">
+
+        <h1>Content block</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet enim vel ligula adipiscing vel gravida dolor bibendum. Aliquam eu leo enim. Integer enim ipsum, volutpat vel porttitor id, congue sed felis. Vivamus convallis, velit ac porta accumsan, ipsum ante porttitor neque, nec pulvinar nibh orci in tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In arcu enim, vestibulum eu mollis ac, posuere nec massa. Mauris id velit nibh, at faucibus elit. Nullam congue condimentum volutpat. Vestibulum id nulla lorem. Mauris ligula ante, suscipit sit amet vestibulum eu, varius ac leo. Vivamus quis tortor et ante auctor elementum. Nunc diam nunc, consectetur id dignissim et, lacinia at erat. Nam tempor egestas suscipit.</p>
+        <p>Ut massa tortor, feugiat a eleifend id, volutpat quis diam. Maecenas ut felis quis nisl ullamcorper accumsan eget congue quam. Sed pellentesque sem sed mauris fringilla sit amet elementum lectus congue. Cras id eros tellus, vitae lobortis sem. Aliquam id nibh vitae sapien lobortis gravida. Nulla congue, purus non cursus ullamcorper, augue erat ornare elit, id scelerisque velit ante sed diam. Curabitur gravida mauris at risus aliquet et sagittis sapien accumsan. Nam in urna turpis. Vestibulum mollis mauris ligula. Curabitur interdum ultricies lacus, eu eleifend sem consectetur sed. Ut porta rhoncus ligula, nec posuere dolor placerat quis. Nam interdum, tortor non sollicitudin consectetur, est arcu commodo enim, sit amet tempus lacus nibh vel ante. Aenean eu elit sit amet leo convallis tempor. Etiam urna lacus, condimentum quis imperdiet eget, volutpat et lectus. Sed vestibulum tellus ut quam suscipit vulputate semper nulla aliquam. Etiam pharetra eros eget ante imperdiet luctus.</p>
+        <p>Integer pretium massa nec libero vestibulum sodales. Morbi vitae nisl a est pulvinar rhoncus. Pellentesque eu ornare ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Morbi sed enim elit, eget pellentesque elit. Donec pharetra, enim id consequat fermentum, elit magna rhoncus felis, sed gravida enim elit euismod sapien. Nunc hendrerit, dolor vitae facilisis cursus, urna lacus fermentum urna, et bibendum sem odio a ligula. Duis viverra feugiat risus, a congue quam interdum nec. Donec feugiat pellentesque dictum. Nam interdum sem non turpis aliquam luctus. Vestibulum tincidunt, purus sed elementum dignissim, eros dolor ultrices dui, ac accumsan massa lorem a enim. Sed cursus tellus sit amet lorem volutpat venenatis. Nunc consequat tempus augue, auctor eleifend eros ullamcorper eu. Suspendisse feugiat gravida dui vitae posuere. Aliquam erat volutpat. Proin neque sem, mattis vel pellentesque ac, hendrerit sed tellus.</p>
+
+    </div>
+    {% end %}
+
+    <script type="text/javascript" src="{{ static_url('breeze/deps.js') }}"></script>
+    <script type="text/javascript">
+
+        $deps.register({
+            'jquery': {
+                path: 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
+            },
+            'cookie': {
+                requires: 'jquery',
+                path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}'
+            },
+            'bootstrap': {
+                requires: 'jquery',
+                path: '{{ static_url("bootstrap/js/bootstrap.js") }}'
             }
-            
-            .breeze-edit-panel-aloha {
-                z-index: -1;
-                border: solid 14px yellow;
-                -webkit-border-radius: 7px;
-                -moz-border-radius: 7px;
+        });
+
+    </script>
+
+    <script type="text/javascript">
+
+        $deps.load('bootstrap');
+
+        $deps.ready('cookie', function() {
+            if ($.cookie('auth')) {
+                
             }
-            
-            .breeze-resize {
-                position: absolute;
-                border: grey dotted 2px;
-            }
-            
-            .breeze-resize-hover {
-                background: skyblue;
-                border-width: 2px 4px;
-                border-style: solid double;
-            }
-            
-        </style>
-        <script type="text/javascript" src="{{ static_url("css3-mediaqueries/2010-03-01/css3-mediaqueries.js") }}"></script>
-    </body>
+        });
+
+    </script>
+
+  </body>
 </html>

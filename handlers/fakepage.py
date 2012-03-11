@@ -1,10 +1,10 @@
 import tornado.gen
 import tornado.web
 
-from breeze.handlers.mongo import MongoHandler
+from breeze.handlers.base import MongoBaseHandler
 
 
-class FakePageHandler(MongoHandler):
+class FakePageHandler(MongoBaseHandler):
 
     @staticmethod
     def _get_fake_page(path):

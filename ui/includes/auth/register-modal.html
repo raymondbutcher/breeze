@@ -1,0 +1,14 @@
+{% extends "../modals/base.html" %}
+
+{% block title %}Register{% end %}
+
+{% block body %}
+    <p>A form should go here.</p>
+{% end %}
+
+{% block footer %}
+    <a href="#" class="btn btn-primary">
+        Register
+    </a>
+    {% module CancelModalButton(js=js, after=after) %}
+{% end %}

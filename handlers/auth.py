@@ -1,55 +1,47 @@
+import breeze.decorators
+
 import tornado.auth
 import tornado.escape
 import tornado.gen
 import tornado.web
 
-from breeze.handlers.error import ErrorHandler
-from breeze.handlers.mongo import MongoHandler
+from breeze.handlers.base import BaseHandler, MongoBaseHandler
 
 
-class AuthHandler(ErrorHandler):
+class RegisterAuthHandler(BaseHandler):
 
-    def clear_auth_cookies(self):
-        """Clear all auth cookies, logging the user out."""
-        self.clear_cookie('auth')
-        self.clear_cookie('auth_staff')
-        self.clear_cookie('auth_superuser')
-
-    def get_current_user(self):
-        """
-        Return the user's email address if they are logged in. This is not
-        returning an actual user object because that needs to be done
-        asynchronously.
-        """
-        return self.get_secure_cookie('auth')
-
-    def set_auth_cookies(self, user):
-        """Set all necessary auth cookies for the given user."""
-
-        self.set_secure_cookie('auth', user['email'])
-
-        if user.get('staff'):
-            self.set_secure_cookie('auth_staff', '1')
-        else:
-            self.clear_cookie('auth_staff')
-
-        if user.get('superuser'):
-            self.set_secure_cookie('auth_superuser', '1')
-        else:
-            self.clear_cookie('auth_superuser')
+    @breeze.decorators.unauthenticated
+    def get(self):
+        context = {
+            'after': self.get_argument('after', '/'),
+            'js': False,
+        }
+        self.render('templates/auth/register.html', **context)
 
 
-class AuthLogoutHandler(AuthHandler):
+class SignInAuthHandler(BaseHandler):
+
+    @breeze.decorators.unauthenticated
+    def get(self):
+        context = {
+            'after': self.get_argument('after', '/'),
+            'js': False,
+        }
+        self.render('templates/auth/sign-in.html', **context)
+
+
+class LogoutAuthHandler(BaseHandler):
 
     def get(self):
-        """Log the user out and redirect to the 'next' page or homepage."""
+        """Log the user out and redirect to the 'after' page or homepage."""
         self.clear_auth_cookies()
-        self.redirect(self.get_argument('next', '/'))
+        self.redirect(self.get_argument('after', '/'))
 
 
-class AuthGoogleHandler(AuthHandler, MongoHandler, tornado.auth.GoogleMixin):
+class GoogleAuthHandler(MongoBaseHandler, tornado.auth.GoogleMixin):
 
     @tornado.web.addslash
+    @breeze.decorators.unauthenticated
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
@@ -73,7 +65,7 @@ class AuthGoogleHandler(AuthHandler, MongoHandler, tornado.auth.GoogleMixin):
 
                 # Set cookies and redirect.
                 self.set_auth_cookies(user)
-                self.redirect(self.get_argument('next', '/'))
+                self.redirect(self.get_argument('after', '/'))
                 return
 
         self.authenticate_redirect()

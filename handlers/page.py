@@ -1,10 +1,10 @@
 import tornado.gen
 import tornado.web
 
-from breeze.handlers.mongo import MongoHandler
+from breeze.handlers.base import MongoBaseHandler
 
 
-class PageHandler(MongoHandler):
+class PageHandler(MongoBaseHandler):
 
     css_column_classes = {
         1: 'onecol',

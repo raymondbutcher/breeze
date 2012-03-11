@@ -2,9 +2,19 @@
 
 {% block title %}{{ code }}: {{ message }}{% end %}
 
-{% block simplecontent %}
-    <h1>{{ code }}: {{ message }}</h1>
-    {% if exception %}
-    <pre>{% raw exception %}</pre>
-    {% end %}
-{% end%}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="span12">
+            <div class="hero-unit">
+                <h1>{{ code }}: {{ message }}</h1>
+                {% if exception %}
+                <pre class="alert alert-error" style="margin: 30px 0 0 0">{% raw exception %}</pre>
+                {% end %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% end %}
