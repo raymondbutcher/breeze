@@ -3,7 +3,63 @@
 {% block title %}{{ page['title'] }}{% end %}
 
 {% block content %}
+
+    <div class="container">
+
+        <div class="row">
+            <div class="hero-unit megatron span7">
+                <h1>Breeze</h1>
+                <p>
+                    A website platform using
+                    <a  href="http://www.tornadoweb.org/"
+                        rel="popover"
+                        data-original-title="About Tornado"
+                        data-content="Tornado is a relatively simple, non-blocking web server written in Python.<br/><br/>Because it is non-blocking, it can handle thousands of simultaneous standing connections, which means the framework is ideal for real-time web services.">
+                        Tornado</a>,
+                    <a  href="http://www.mongodb.org/"
+                        rel="popover"
+                        data-original-title="About MongoDB"
+                        data-content="MongoDB is an open source document-oriented NoSQL database system.<br/><br/>Instead of storing data in tables as is made in a &quot;classical&quot; relational database, MongoDB store structure data as JSON-like documents with dynamic schemas.">
+                        MongoDB</a>, and
+                    <a  href="http://twitter.github.com/bootstrap/"
+                        rel="popover"
+                        data-original-title="About Bootstrap"
+                        data-content="Bootstrap is Twitter's toolkit for kickstarting CSS for websites, apps, and more. It includes base CSS styles for typography, forms, buttons, tables, grids, navigation, alerts, and more.">
+                        Bootstrap</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="span4">
+                <div class="sub-header">
+                  <h2>Features</h2>
+                </div>
+                <ul>
+                    <li>Non-blocking</li>
+                    <li>Single sign-on</li>
+                </ul>
+            </div>
+
+            <div class="span4">
+                <div class="sub-header">
+                  <h2>Requires</h2>
+                </div>
+                <ul>
+                    <li><a href="http://www.python.org/">Python</a></li>
+                    <li><a href="http://www.tornadoweb.org/">Tornado</a></li>
+                    <li><a href="http://www.mongodb.org/">MongoDB</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+    
+    {#
     <div class="container-fluid" id="page-{{ page['_id'] }}">
+        <div class="row-fluid">
         {% for row in page['structure'] %}
         <div class="row-fluid">
             {% for column in row %}
@@ -14,4 +70,6 @@
         </div>
         {% end %}
     </div>
+    #}
+
 {% end%}

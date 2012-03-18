@@ -4,13 +4,13 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container error-page">
     <div class="row">
         <div class="span12">
-            <div class="hero-unit">
-                <h1>{{ code }}: {{ message }}</h1>
+            <div class="hero-unit megatron">
+                <h2>{{ code }}: {{ message }}</h2>
                 {% if exception %}
-                <pre class="alert alert-error" style="margin: 30px 0 0 0">{% raw exception %}</pre>
+                <pre class="alert alert-error">{% raw exception %}</pre>
                 {% end %}
             </div>
         </div>

@@ -1,124 +1,42 @@
-/* ============================== */
-/* ! Layout for desktop version   */
-/* ============================== */
+body, section {
+    padding-top: 60px; /* Push the content below the navbar */
+}
 
-.page {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+.popover-content {
     text-align: justify;
-    margin-bottom: 1em;
 }
 
-.page h1,
-.page h2,
-.page h3,
-.page h4,
-.page h5,
-.page h6,
-.page p,
-.page ul,
-.page ol {
-    margin: 1em 0 1em 0;
+.megatron {
+    background: none;
 }
-
-.page ul,
-.page ol {
-    list-style-position: inside;
+.megatron h1 {
+    font-size: 120px;
 }
-
-.page hr {
-    border: solid 1px black;
-    margin: 1em 0 0 0;
+.megatron h2 {
+    font-size: 60px;
+    line-height: 70px;
+    font-weight: normal;
 }
-.page .last hr {
-    margin-right: 2px;
+.megatron p {
+    font-size: 36px;
+    line-height: 45px;
 }
-
-.nolink {
-    cursor: default !important;
+.megatron li {
+    font-size: 22px;
+    line-height: 32px;
 }
 
 
-/* Tweaks for jquery-ui */
-.ui-dialog,
-.ui-tabs {
-    font-size: 0.65em;
+.sub-header {
+    padding-bottom: 12px;
+    margin: 18px 0;
+    border-bottom: 1px solid #eeeeee;
 }
-.ui-dialog {
-    margin: 16px 24px 16px 16px;
-}
-.ui-resizable-helper {
-    border: 1px dotted gray;
+.sub-header h2 {
+    line-height: 1;
 }
 
 
-/* Admin menu */
-.breeze-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 0 !important;
-    z-index: 9999;
-}
-.breeze-menu ul {
-    list-style: none;
-}
-.breeze-menu ul.start {
-    padding: 0 !important;
-}
-
-.breeze-menu-off li.start {
-    margin-left: 3px !important;
-}
-.breeze-menu-off li.start span {
-    margin-top: 4px;
-}
-.breeze-menu-off a {
-    border-top: none !important;
-}
-
-.breeze-menu-main ul {
-    position: absolute !important;
-    top: 27px;
-    left: 0;
-    padding: 0.75em !important;
-}
-.breeze-menu-main ul li {
-    white-space: nowrap;
-    float: none !important;
-}
-
-
-
-/* ============================= */
-/* ! Layout for mobile version   */
-/* ============================= */
-
-@media handheld, only screen and (max-width: 767px) {
-
-    body {
-            
-    }
-
-    .breeze-edit {
-        border: none;
-        margin: 0;
-    }
-
-}
-
-
-/* ========================================== */
-/* ! Provide higher res assets for iPhone 4   */
-/* ========================================== */
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2) { 
-
-/*
-    .logo {
-        background: url(logo2x.jpg) no-repeat;
-        background-size: 212px 303px;
-    }
-*/
-
+.error-page pre {
+    margin: 30px 0 0 0;
 }
