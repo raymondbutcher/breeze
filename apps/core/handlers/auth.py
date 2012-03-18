@@ -5,21 +5,10 @@ import tornado.escape
 import tornado.gen
 import tornado.web
 
-from breeze.handlers.base import BaseHandler, MongoBaseHandler
+from breeze.handlers import RequestHandler, MongoRequestHandler
 
 
-class RegisterAuthHandler(BaseHandler):
-
-    @breeze.decorators.unauthenticated
-    def get(self):
-        context = {
-            'after': self.get_argument('after', '/'),
-            'js': False,
-        }
-        self.render('templates/auth/register.html', **context)
-
-
-class SignInAuthHandler(BaseHandler):
+class RegisterAuthHandler(RequestHandler):
 
     @breeze.decorators.unauthenticated
     def get(self):
@@ -27,10 +16,21 @@ class SignInAuthHandler(BaseHandler):
             'after': self.get_argument('after', '/'),
             'js': False,
         }
-        self.render('templates/auth/sign-in.html', **context)
+        self.render('core/auth/register.html', **context)
 
 
-class LogoutAuthHandler(BaseHandler):
+class SignInAuthHandler(RequestHandler):
+
+    @breeze.decorators.unauthenticated
+    def get(self):
+        context = {
+            'after': self.get_argument('after', '/'),
+            'js': False,
+        }
+        self.render('core/auth/sign-in.html', **context)
+
+
+class LogoutAuthHandler(RequestHandler):
 
     def get(self):
         """Log the user out and redirect to the 'after' page or homepage."""
@@ -38,7 +38,7 @@ class LogoutAuthHandler(BaseHandler):
         self.redirect(self.get_argument('after', '/'))
 
 
-class GoogleAuthHandler(MongoBaseHandler, tornado.auth.GoogleMixin):
+class GoogleAuthHandler(MongoRequestHandler, tornado.auth.GoogleMixin):
 
     @tornado.web.addslash
     @breeze.decorators.unauthenticated

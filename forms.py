@@ -1,3 +1,6 @@
+import json
+
+
 class Undefined(Exception):
     pass
 
@@ -77,6 +80,7 @@ class FormType(type):
 
 
 class Form(object):
+    """The base Form class to be used in Breeze apps."""
 
     __metaclass__ = FormType
 
@@ -102,3 +106,41 @@ class Form(object):
     def __repr__(self):
         kwargs = ('%s=%r' % item for item in self)
         return '%s(%s)' % (self.__class__.__name__, ', '.join(kwargs))
+
+
+def formfield(validator_func):
+    """
+    Creates a FormField instance that uses the given function as its validator.
+    The resulting form field can then be used when defining a Form class.
+
+    """
+
+    def create_field(**options):
+        return FormField(validator_func, **options)
+    return create_field
+
+
+################################################################################
+# Form fields                                                                  #
+################################################################################
+
+
+@formfield
+def integer(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        raise ValidationError('%r is not an integer' % value)
+
+
+@formfield
+def json_string(value):
+    try:
+        return json.loads(value)
+    except ValueError, error:
+        raise ValidationError(error)
+
+
+@formfield
+def text(value):
+    return unicode(value)

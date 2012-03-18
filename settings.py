@@ -1,4 +1,4 @@
-# Run "python main.py --help" to see which settings can be defined here.
+# Run "python launch.py --help" to see which settings can be defined here.
 
 debug = True
 

@@ -1,6 +1,10 @@
-{% extends "modal.html" %}
+{% extends "base.html" %}
 
 {% block title %}Sign in{% end %}
+
+{% block register-modals %}{% end %}
+
+{% block register-link %}{% end %}
 
 {% block content %}
     {% module SignInModal(id='sign-in', after=after, js=False) %}

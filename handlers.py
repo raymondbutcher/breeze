@@ -1,7 +1,7 @@
 import asyncmongo
-import bson.json_util
+#import bson.json_util
 import httplib
-import json
+#import json
 import tornado.escape
 import tornado.template
 import tornado.web
@@ -10,7 +10,7 @@ import traceback
 from tornado.options import options
 
 
-class AuthHandler(tornado.web.RequestHandler):
+class AuthMixin(object):
 
     def clear_auth_cookies(self):
         """Clear all auth cookies, logging the user out."""
@@ -42,7 +42,7 @@ class AuthHandler(tornado.web.RequestHandler):
             self.clear_cookie('auth_superuser')
 
 
-class ErrorHandler(tornado.web.RequestHandler):
+class ErrorMixin(object):
 
     basic_error_template = tornado.escape.squeeze('''
     <html>
@@ -70,23 +70,23 @@ class ErrorHandler(tornado.web.RequestHandler):
                 context['exception'] = ''.join(traceback.format_exception(*kwargs['exc_info']))
         try:
             try:
-                self.render('templates/%d.html' % status_code, **context)
+                self.render('errors/%d.html' % status_code, **context)
             except IOError:
-                self.render('templates/error.html', **context)
+                self.render('errors/error.html', **context)
         except Exception:
             basic_template = tornado.template.Template(self.basic_error_template)
             self.write(basic_template.generate(**context))
 
 
-class MongoHandler(tornado.web.RequestHandler):
+class MongoMixin(object):
 
-    @staticmethod
-    def json_decode(data):
-        return json.loads(data, default=bson.json_util.object_hook)
-
-    @staticmethod
-    def json_encode(data):
-        return json.dumps(data, default=bson.json_util.default)
+    #@staticmethod
+    #def json_decode(data):
+    #    return json.loads(data, default=bson.json_util.object_hook)
+    #
+    #@staticmethod
+    #def json_encode(data):
+    #    return json.dumps(data, default=bson.json_util.default)
 
     @property
     def db(self):
@@ -115,3 +115,11 @@ class MongoHandler(tornado.web.RequestHandler):
                 return None
             raise tornado.web.HTTPError(404, 'Page object not found')
         return result
+
+
+class RequestHandler(ErrorMixin, AuthMixin, tornado.web.RequestHandler):
+    pass
+
+
+class MongoRequestHandler(MongoMixin, RequestHandler):
+    pass

@@ -1,17 +1,9 @@
 import tornado.web
 
 
-class PageContent(tornado.web.UIModule):
-    def render(self, content):
-        if isinstance(content, dict):
-            raise NotImplementedError('TODO: Render %s' % content)
-        else:
-            return content
-
-
 class BaseModal(tornado.web.UIModule):
 
-    template = 'includes/modals/base.html'
+    template = 'modals/base.html'
 
     def render(self, **context):
         assert 'id' in context
@@ -20,17 +12,9 @@ class BaseModal(tornado.web.UIModule):
         return self.render_string(self.template, **context)
 
 
-class SignInModal(BaseModal):
-    template = 'includes/auth/sign-in-modal.html'
-
-
-class RegisterModal(SignInModal):
-    template = 'includes/auth/register-modal.html'
-
-
 class CancelModalButton(tornado.web.UIModule):
 
-    template = 'includes/modals/buttons/cancel.html'
+    template = 'modals/buttons/cancel.html'
 
     def render(self, **context):
         assert 'js' in context
@@ -52,7 +36,7 @@ class LinkModalButton(tornado.web.UIModule):
 
     """
 
-    template = 'includes/modals/buttons/link.html'
+    template = 'modals/buttons/link.html'
 
     def render(self, **context):
         assert 'js' in context

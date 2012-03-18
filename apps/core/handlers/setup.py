@@ -1,10 +1,10 @@
 import tornado.gen
 import tornado.web
 
-from breeze.handlers.base import MongoBaseHandler
+from breeze.handlers import MongoRequestHandler
 
 
-class SetupHandler(MongoBaseHandler):
+class SetupHandler(MongoRequestHandler):
 
     def get(self):
         context = {

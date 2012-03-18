@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}...{% end %}</title>
+        <title>{% block title %}Untitled Page{% end %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -52,21 +52,17 @@
                     </ul>
                     <ul class="nav pull-right">
                         <li class="dropdown" id="sign-in-dropdown">
-                            <a href="/auth/?after={{ url_escape(request.uri) }}"
-                               class="dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-target="#sign-in-dropdown">
-                                {% if current_user %}
-                                {{ current_user }}
-                                {% else %}
-                                Sign in
-                                {% end %}
+                            <a  href="/sign-in/?after={{ url_escape(request.uri) }}"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
+                                data-target="#sign-in-dropdown">
+                                {{ current_user or 'Sign In' }}
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
                                 {% if current_user %}
                                     <!--<li class="divider"></li>-->
-                                    <li><a href="/auth/logout/?after={{ url_escape(request.uri) }}">Log out</a></li>
+                                    <li><a href="/logout/?after={{ url_escape(request.uri) }}">Log out</a></li>
                                 {% else %}
                                     <li><a href="/auth/google/?after={{ url_escape(request.uri) }}">Sign in using Google</a></li>
                                     {% block register-link %}
@@ -88,8 +84,6 @@
         <h1>Content block</h1>
 
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet enim vel ligula adipiscing vel gravida dolor bibendum. Aliquam eu leo enim. Integer enim ipsum, volutpat vel porttitor id, congue sed felis. Vivamus convallis, velit ac porta accumsan, ipsum ante porttitor neque, nec pulvinar nibh orci in tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In arcu enim, vestibulum eu mollis ac, posuere nec massa. Mauris id velit nibh, at faucibus elit. Nullam congue condimentum volutpat. Vestibulum id nulla lorem. Mauris ligula ante, suscipit sit amet vestibulum eu, varius ac leo. Vivamus quis tortor et ante auctor elementum. Nunc diam nunc, consectetur id dignissim et, lacinia at erat. Nam tempor egestas suscipit.</p>
-        <p>Ut massa tortor, feugiat a eleifend id, volutpat quis diam. Maecenas ut felis quis nisl ullamcorper accumsan eget congue quam. Sed pellentesque sem sed mauris fringilla sit amet elementum lectus congue. Cras id eros tellus, vitae lobortis sem. Aliquam id nibh vitae sapien lobortis gravida. Nulla congue, purus non cursus ullamcorper, augue erat ornare elit, id scelerisque velit ante sed diam. Curabitur gravida mauris at risus aliquet et sagittis sapien accumsan. Nam in urna turpis. Vestibulum mollis mauris ligula. Curabitur interdum ultricies lacus, eu eleifend sem consectetur sed. Ut porta rhoncus ligula, nec posuere dolor placerat quis. Nam interdum, tortor non sollicitudin consectetur, est arcu commodo enim, sit amet tempus lacus nibh vel ante. Aenean eu elit sit amet leo convallis tempor. Etiam urna lacus, condimentum quis imperdiet eget, volutpat et lectus. Sed vestibulum tellus ut quam suscipit vulputate semper nulla aliquam. Etiam pharetra eros eget ante imperdiet luctus.</p>
-        <p>Integer pretium massa nec libero vestibulum sodales. Morbi vitae nisl a est pulvinar rhoncus. Pellentesque eu ornare ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Morbi sed enim elit, eget pellentesque elit. Donec pharetra, enim id consequat fermentum, elit magna rhoncus felis, sed gravida enim elit euismod sapien. Nunc hendrerit, dolor vitae facilisis cursus, urna lacus fermentum urna, et bibendum sem odio a ligula. Duis viverra feugiat risus, a congue quam interdum nec. Donec feugiat pellentesque dictum. Nam interdum sem non turpis aliquam luctus. Vestibulum tincidunt, purus sed elementum dignissim, eros dolor ultrices dui, ac accumsan massa lorem a enim. Sed cursus tellus sit amet lorem volutpat venenatis. Nunc consequat tempus augue, auctor eleifend eros ullamcorper eu. Suspendisse feugiat gravida dui vitae posuere. Aliquam erat volutpat. Proin neque sem, mattis vel pellentesque ac, hendrerit sed tellus.</p>
 
     </div>
     {% end %}
