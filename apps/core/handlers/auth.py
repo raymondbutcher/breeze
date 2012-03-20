@@ -13,7 +13,7 @@ class RegisterAuthHandler(RequestHandler):
     @breeze.decorators.unauthenticated
     def get(self):
         context = {
-            'after': self.get_argument('after', '/'),
+            'next_url': self.get_argument('next', '/'),
             'js': False,
         }
         self.render('core/auth/register.html', **context)
@@ -24,7 +24,7 @@ class SignInAuthHandler(RequestHandler):
     @breeze.decorators.unauthenticated
     def get(self):
         context = {
-            'after': self.get_argument('after', '/'),
+            'next_url': self.get_argument('next', '/'),
             'js': False,
         }
         self.render('core/auth/sign-in.html', **context)
@@ -33,14 +33,13 @@ class SignInAuthHandler(RequestHandler):
 class LogoutAuthHandler(RequestHandler):
 
     def get(self):
-        """Log the user out and redirect to the 'after' page or homepage."""
+        """Log the user out and redirect to the 'next' page or homepage."""
         self.clear_auth_cookies()
-        self.redirect(self.get_argument('after', '/'))
+        self.redirect(self.get_argument('next', '/'))
 
 
 class GoogleAuthHandler(MongoRequestHandler, tornado.auth.GoogleMixin):
 
-    @tornado.web.addslash
     @breeze.decorators.unauthenticated
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -65,7 +64,7 @@ class GoogleAuthHandler(MongoRequestHandler, tornado.auth.GoogleMixin):
 
                 # Set cookies and redirect.
                 self.set_auth_cookies(user)
-                self.redirect(self.get_argument('after', '/'))
+                self.redirect(self.get_argument('next', '/'))
                 return
 
         self.authenticate_redirect()

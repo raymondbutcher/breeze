@@ -7,5 +7,5 @@
 {% block register-link %}{% end %}
 
 {% block content %}
-    {% module SignInModal(id='sign-in', after=after, js=False) %}
+    {% module SignInModal(id='sign-in', next_url=next_url, js=False) %}
 {% end%}

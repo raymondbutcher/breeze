@@ -1,0 +1,16 @@
+<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+        <li{% if not key %} class="active"{% end %}>
+            <a href="{% if not key %}#{% else %}./{% end %}">
+                All
+            </a>
+        </li>
+        {% for admin in sorted(admin_registry.values()) %}
+        <li{% if admin is current_admin %} class="active"{% end %}>
+            <a href="{% if admin is current_admin %}#{% else %}{{ admin.key }}{% end %}">
+                {{ admin.name }}
+            </a>
+        </li>
+        {% end %}
+    </ul>
+</div>

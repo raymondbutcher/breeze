@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Breeze Admin{% end %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row">
+        <div class="span12">
+            <div class="page-header">
+                <h1>Admin</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="span2">
+            {% include "core/admin/menu-left.html" %}
+        </div>
+        <div class="span10">
+            <div class="row">
+                {% if current_form %}
+                    <div class="span10">
+                        {% include "core/admin/menu-top-small.html" %}
+                        {% include "core/admin/form.html" %}
+                    </div>
+                {% else %}
+                    {% include "core/admin/menu-top-big.html" %}
+                {% end %}
+            </div>
+        </div>
+    </div>
+</div>
+{% end%}

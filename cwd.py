@@ -1,3 +1,9 @@
+"""
+Adds the current working directory's parent to the system paths,
+allowing the current directory to be imported as a python module.
+
+"""
+
 import os
 import sys
 

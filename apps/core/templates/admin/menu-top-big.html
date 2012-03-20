@@ -1,0 +1,25 @@
+{% for admin in sorted(admin_registry.values()) %}
+{% if not key or admin == current_admin %}
+    <div class="span3">
+        <ul class="nav nav-tabs nav-stacked">
+            <li class="active">
+                <a href="#">
+                    <h3>
+                        {{ admin.description }}
+                    </h3>
+                </a>
+            </li>
+            {% for name, form in admin %}
+            {% if not name.startswith('_') %}
+            {% set form_key = form_registry.get_key(form) %}
+            <li {% if key == form_key %} class="active"{% end %}>
+                <a href="./{{ form_key }}">
+                    {{ form.__doc__ or form.__name__ }}
+                </a>
+            </li>
+            {% end %}
+            {% end %}
+        </ul>
+    </div>
+{% end %}
+{% end %}

@@ -39,11 +39,11 @@
                     <ul class="nav">
                         {% set menu = (
                             ('/', 'Welcome'),
-                            ('/blog/', 'Blog'),
+                            ('/admin/', 'Admin'),
                         ) %}
                         {% for item in menu %}
                             {% set href, label = item %}
-                            <li{% if request.path == href %} class="active"{% end %}>
+                            <li{% if (href == '/' and request.path == '/') or (href != '/' and request.path.startswith(href)) %} class="active"{% end %}>
                                 <a href="{{ href }}#">
                                     {{ label }}
                                 </a>
@@ -52,7 +52,7 @@
                     </ul>
                     <ul class="nav pull-right">
                         <li class="dropdown" id="sign-in-dropdown">
-                            <a  href="/sign-in/?after={{ url_escape(request.uri) }}"
+                            <a  href="/sign-in/?next={{ url_escape(request.uri) }}"
                                 class="dropdown-toggle"
                                 data-toggle="dropdown"
                                 data-target="#sign-in-dropdown">
@@ -62,9 +62,9 @@
                             <ul class="dropdown-menu">
                                 {% if current_user %}
                                     <!--<li class="divider"></li>-->
-                                    <li><a href="/logout/?after={{ url_escape(request.uri) }}">Log out</a></li>
+                                    <li><a href="/logout/?next={{ url_escape(request.uri) }}">Log out</a></li>
                                 {% else %}
-                                    <li><a href="/auth/google/?after={{ url_escape(request.uri) }}">Sign in using Google</a></li>
+                                    <li><a href="/auth/google/?next={{ url_escape(request.uri) }}">Sign in using Google</a></li>
                                     {% block register-link %}
                                         <li class="divider"></li>
                                         <li><a href="#sign-in" data-toggle="modal">Register</a></li>
@@ -78,19 +78,11 @@
         </div>
     </div>
 
-    {% block content %}
-    <div class="container-fluid">
-
-        <h1>Content block</h1>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet enim vel ligula adipiscing vel gravida dolor bibendum. Aliquam eu leo enim. Integer enim ipsum, volutpat vel porttitor id, congue sed felis. Vivamus convallis, velit ac porta accumsan, ipsum ante porttitor neque, nec pulvinar nibh orci in tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In arcu enim, vestibulum eu mollis ac, posuere nec massa. Mauris id velit nibh, at faucibus elit. Nullam congue condimentum volutpat. Vestibulum id nulla lorem. Mauris ligula ante, suscipit sit amet vestibulum eu, varius ac leo. Vivamus quis tortor et ante auctor elementum. Nunc diam nunc, consectetur id dignissim et, lacinia at erat. Nam tempor egestas suscipit.</p>
-
-    </div>
-    {% end %}
+    {% block content %}{% end %}
 
     {% block register-modals %}
-        {% module SignInModal(after=request.uri, js=True, id="sign-in") %}
-        {% module RegisterModal(after=request.uri, js=True, id="register") %}
+        {% module SignInModal(next_url=request.uri, js=True, id="sign-in") %}
+        {% module RegisterModal(next_url=request.uri, js=True, id="register") %}
     {% end %}
 
     <script type="text/javascript" src="{{ static_url('breeze/deps.js') }}"></script>
@@ -120,11 +112,11 @@
 
         $deps.load('breeze');
 
-        $deps.ready('cookie', function() {
-            if ($.cookie('auth')) {
-                
-            }
-        });
+        //$deps.ready('cookie', function() {
+        //    if ($.cookie('auth')) {
+        //        // User is logged in.
+        //    }
+        //});
 
     </script>
 

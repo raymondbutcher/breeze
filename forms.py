@@ -53,11 +53,11 @@ class FormField(object):
         return self.value
 
 
-class FormType(type):
+class FormClass(type):
 
     def __new__(cls, name, bases, dictionary):
 
-        new_class = super(FormType, cls).__new__(cls, name, bases, dictionary)
+        new_class = super(FormClass, cls).__new__(cls, name, bases, dictionary)
 
         field_dict = {}
 
@@ -82,7 +82,7 @@ class FormType(type):
 class Form(object):
     """The base Form class to be used in Breeze apps."""
 
-    __metaclass__ = FormType
+    __metaclass__ = FormClass
 
     def __init__(self, **data):
         """Validates and processes the given data."""
@@ -102,6 +102,9 @@ class Form(object):
 
         for field in cls.__fields__:
             yield field.name, field.value
+
+    def __call__(self, *args, **kwargs):
+        raise NotImplementedError()
 
     def __repr__(self):
         kwargs = ('%s=%r' % item for item in self)

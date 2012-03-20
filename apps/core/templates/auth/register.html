@@ -7,5 +7,5 @@
 {% block register-link %}{% end %}
 
 {% block content %}
-    {% module RegisterModal(id='register', after=after, js=False) %}
+    {% module RegisterModal(id='register', next_url=next_url, js=False) %}
 {% end%}

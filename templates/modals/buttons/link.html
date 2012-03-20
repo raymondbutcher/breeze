@@ -4,7 +4,7 @@
         data-toggle="modal"
         onclick="$(this).parents('.modal').modal('hide')"
     {% else %}
-        href="/auth/register/?after={{ url_escape(after) }}"
+        href="{{ next_url }}"
     {% end %}>
     {% raw label %}
 </a>

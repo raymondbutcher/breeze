@@ -14,7 +14,7 @@
         You can sign in to skip filling out yet another registration form.
     </p>#}
     <p>
-        <a class="btn btn-large btn-success" href="/auth/google/?after={{ url_escape(after) }}">
+        <a class="btn btn-large btn-success" href="/auth/google/?next={{ url_escape(next_url) }}">
         Google
         </a>
     </p>
@@ -25,9 +25,9 @@
     {% module LinkModalButton(
         js=js,
         modal='#register',
-        after=after,
+        next_url=next_url,
         label='Let me register manually <i class="icon-chevron-right icon-white"></i>',
     ) %}
     #}
-    {% module CancelModalButton(js=js, after=after) %}
+    {% module CancelModalButton(js=js, next_url=next_url) %}
 {% end %}
