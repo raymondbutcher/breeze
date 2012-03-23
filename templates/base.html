@@ -52,7 +52,7 @@
                     </ul>
                     <ul class="nav pull-right">
                         <li class="dropdown" id="sign-in-dropdown">
-                            <a  href="/sign-in/?next={{ url_escape(request.uri) }}"
+                            <a  href="/sign-in/{% if request.uri != '/' %}?next={{ url_escape(request.uri) }}{% end %}"
                                 class="dropdown-toggle"
                                 data-toggle="dropdown"
                                 data-target="#sign-in-dropdown">
@@ -92,10 +92,10 @@
             'jquery': {
                 path: 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
             },
-            'cookie': {
-                requires: 'jquery',
-                path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}'
-            },
+            //'cookie': {
+            //    requires: 'jquery',
+            //    path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}'
+            //},
             'bootstrap': {
                 requires: 'jquery',
                 path: '{{ static_url("bootstrap/js/bootstrap.js") }}'
@@ -103,22 +103,15 @@
             'breeze': {
                 requires: 'bootstrap',
                 path: '{{ static_url("breeze/breeze.js") }}'
+            },
+            'breeze-forms': {
+                requires: 'breeze',
+                path: '{{ static_url("breeze/forms.js") }}'
             }
         });
 
-    </script>
-
-    <script type="text/javascript">
-
         $deps.load('breeze');
 
-        //$deps.ready('cookie', function() {
-        //    if ($.cookie('auth')) {
-        //        // User is logged in.
-        //    }
-        //});
-
     </script>
-
   </body>
 </html>

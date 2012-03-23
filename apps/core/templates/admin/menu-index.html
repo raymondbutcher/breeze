@@ -9,15 +9,13 @@
                     </h3>
                 </a>
             </li>
-            {% for name, form in admin %}
-            {% if not name.startswith('_') %}
+            {% for form, name in admin.show %}
             {% set form_key = form_registry.get_key(form) %}
             <li {% if key == form_key %} class="active"{% end %}>
                 <a href="./{{ form_key }}">
-                    {{ form.__doc__ or form.__name__ }}
+                    {{ name }}
                 </a>
             </li>
-            {% end %}
             {% end %}
         </ul>
     </div>

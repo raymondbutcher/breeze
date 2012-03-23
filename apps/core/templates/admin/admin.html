@@ -21,11 +21,11 @@
             <div class="row">
                 {% if current_form %}
                     <div class="span10">
-                        {% include "core/admin/menu-top-small.html" %}
-                        {% include "core/admin/form.html" %}
+                        {% include "core/admin/menu-top.html" %}
+                        {% module Form(current_form) %}
                     </div>
                 {% else %}
-                    {% include "core/admin/menu-top-big.html" %}
+                    {% include "core/admin/menu-index.html" %}
                 {% end %}
             </div>
         </div>

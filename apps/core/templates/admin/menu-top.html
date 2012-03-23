@@ -1,12 +1,10 @@
 <ul class="nav nav-tabs">
-    {% for name, form in current_admin %}
-    {% if not name.startswith('_') or form is current_form %}
+    {% for form, name in current_admin.show %}
     {% set form_key = form_registry.get_key(form) %}
     <li {% if key == form_key %} class="active"{% end %}>
         <a href="./{{ form_key }}">
-            {{ form.__doc__ or form.__name__ }}
+            {{ name }}
         </a>
     </li>
-    {% end %}
     {% end %}
 </ul>

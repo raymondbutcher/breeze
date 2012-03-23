@@ -1,5 +1,4 @@
 import inspect
-import re
 
 from forms import Form
 
@@ -33,6 +32,8 @@ class Admin(object):
 
     __metaclass__ = AdminClass
 
+    hide = []
+
     def __init__(self):
 
         if not hasattr(self, 'app_name'):
@@ -41,12 +42,14 @@ class Admin(object):
         if not hasattr(self, 'key'):
             self.key = '%s.%s' % (self.app_name, self.__class__.__name__)
 
-        for field in ('name', 'description'):
-            assert hasattr(self, field), '%s requires a %s' % (self.__class__, field)
+        for field in ('name', 'description', 'show'):
+            assert getattr(self, field, None), '%s requires "%s"' % (self.__class__, field)
 
     def __cmp__(self, other):
         return cmp(self.name, other.name)
 
     def __iter__(self):
-        for name, form in self.__forms__:
+        for form, name in self.show:
+            yield name, form
+        for form, name in self.hide:
             yield name, form

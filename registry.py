@@ -85,6 +85,13 @@ class FormRegistry(Registry):
                 if self.is_form(item):
                     self['%s.%s' % (app_name, item.__name__)] = item
 
+    def get_key(self, form):
+        if isinstance(form, Form):
+            form = type(form)
+        for key, test_form in self.iteritems():
+            if form is test_form:
+                return key
+
     @staticmethod
     def is_form(item):
         """Checks if the given item is a Form subclass."""

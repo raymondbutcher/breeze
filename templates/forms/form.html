@@ -1,0 +1,15 @@
+{% set form_key = form_registry.get_key(form) %}
+<form action="./{{ form_key }}" method="get" data-form-key="{{ form_key }}" class="form-horizontal">
+    <fieldset>
+
+        {% for field in form.__fields__ %}
+            {% module FormField(form, field) %}
+        {% end %}
+
+        <div class="form-actions">
+            <button class="btn" type="submit">Save and continue</button>
+            <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+
+    </fieldset>
+</form>

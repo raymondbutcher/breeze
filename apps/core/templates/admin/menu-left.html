@@ -7,7 +7,9 @@
         </li>
         {% for admin in sorted(admin_registry.values()) %}
         <li{% if admin is current_admin %} class="active"{% end %}>
-            <a href="{% if admin is current_admin %}#{% else %}{{ admin.key }}{% end %}">
+            <a href="{% if admin is current_admin %}#{% else %}{{
+                    form_registry.get_key(admin.show[0][0])
+                }}{% end %}">
                 {{ admin.name }}
             </a>
         </li>
