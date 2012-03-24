@@ -67,3 +67,13 @@ class FormField(tornado.web.UIModule):
             'field': field,
         }
         return self.render_string('forms/field.html', **context)
+
+
+class FormButton(tornado.web.UIModule):
+
+    def render(self, form, button):
+        context = {
+            'form': form,
+            'button': button,
+        }
+        return self.render_string('forms/button.html', **context)

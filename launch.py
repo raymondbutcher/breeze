@@ -3,9 +3,7 @@
 import cwd
 assert cwd
 
-import glob
 import os
-import sys
 
 from tornado.ioloop import IOLoop
 from tornado.options import options, parse_command_line, parse_config_file

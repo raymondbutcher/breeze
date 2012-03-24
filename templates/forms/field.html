@@ -1,22 +1,30 @@
 {% set field_error = form.__errors__.get(field.name) %}
-<div class="control-group{% if field_error %} error{% end %}">
-    <label class="control-label" for="form_{{ field.name }}">{{ field.label or field.name }}</label>
-    <div class="controls">
-        <div
-            class="input-append"><input
-                id="form_{{ field.name }}"
-                name="{{ field.name }}"
-                class="input-xlarge"
-                type="text"
-                value="{{ form.__values__.get(field.name, '') }}"
-                ><span
-                    class="add-on">{{ field.type }}</span>
-            {% if field_error %}
-                <span class="help-inline">{{ field_error }}</span>
+
+{% if field.hidden and not field_error %}
+    <input type="hidden" name="{{ field.name }}" value"{{ form.__values__.get(field.name, '') }}"/>
+{% else %}
+    <div class="control-group{% if field_error %} error{% end %}">
+        <label class="control-label" for="form_{{ field.name }}">{{ field.label }}</label>
+        <div class="controls">
+            <div{% if field.type %}
+                class="input-append"
+                {% end %}><input
+                    id="form_{{ field.name }}"
+                    name="{{ field.name }}"
+                    class="input-xlarge"
+                    type="text"
+                    value="{{ form.__values__.get(field.name, '') }}"
+                    />{% if field.type %}<span
+                        class="add-on">
+                        {{ field.type }}
+                    </span>{% end %}
+                {% if field_error %}
+                    <span class="help-inline">{{ field_error }}</span>
+                {% end %}
+            </div>
+            {% if field.help_text %}
+            <p class="help-block">{{ field.help_text }}</p>
             {% end %}
         </div>
-        {% if field.help_text %}
-        <p class="help-block">{{ field.help_text }}</p>
-        {% end %}
     </div>
-</div>
+{% end %}

@@ -42,10 +42,10 @@ class AdminHandler(MongoRequestHandler):
 
         admin_class, form_class = self.get_from_key(key)
 
-        if not form_class:
+        if form_class:
+            form = form_class(self)
+        else:
             raise tornado.web.HTTPError(404, 'Form "%s" not found.' % key)
-
-        form = form_class(self)
 
         context = {
             'key': key,

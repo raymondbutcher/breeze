@@ -2,6 +2,10 @@ import json
 import re
 
 
+def default_label(func):
+    return func.__name__.capitalize().replace('_', ' ')
+
+
 class Undefined(Exception):
     pass
 
@@ -14,9 +18,7 @@ class FormField(object):
 
     _order = 0
 
-    optional = False
-
-    def __init__(self, validator_func, default=Undefined, help_text='', label='', type=''):
+    def __init__(self, validator_func, default=Undefined, help_text='', hidden=False, label='', type=Undefined):
 
         self._validator_func = validator_func
         self._order = self.__class__._order
@@ -24,8 +26,13 @@ class FormField(object):
 
         self.default = default
         self.help_text = help_text
-        self.label = label
-        self.type = type or validator_func.__name__
+        self.hidden = hidden
+        self.label = label or default_label(validator_func)
+
+        if type is Undefined:
+            self.type = default_label(validator_func).lower()
+        else:
+            self.type = type
 
     def __bool__(self):
         return hasattr(self, 'value')
@@ -43,18 +50,9 @@ class FormField(object):
             return super(FormField, self).__repr__()
 
     def __set__(self, form, raw_value):
-
-        if self.name in form:
-            del form[self.name]
-
-        if raw_value is Undefined:
-            if self.default is Undefined:
-                raise Undefined('%r is a required field.' % self)
-            else:
-                form[self.name] = self.default
-        else:
+        if raw_value is not Undefined:
             form[self.name] = raw_value
-            self.clean(raw_value)
+        self.clean(raw_value)
 
     def clean(self, raw_value):
         if raw_value is Undefined:
@@ -63,29 +61,55 @@ class FormField(object):
         return self._validator_func(raw_value)
 
 
+class FormButton(object):
+
+    def __init__(self, action_func, default=Undefined, hidden=False, label='', style=''):
+        self._action_func = action_func
+        self.default = default
+        self.hidden = hidden
+        self.label = label or default_label(action_func)
+        self.style = style
+
+    def __call__(self, form, handler):
+        self._action_func(form, handler)
+
+
 class FormClass(type):
 
     def __new__(cls, name, bases, dictionary):
 
         new_class = super(FormClass, cls).__new__(cls, name, bases, dictionary)
 
-        field_dict = {}
+        types = (
+            ('__fields__', FormField, 'formfield'),
+            ('__buttons__', FormButton, None),
+        )
 
-        # Find all of the fields in the parent classes.
-        for base in bases:
-            for field in base.__dict__.get('__fields__', []):
-                field_dict.setdefault(field.name, field)
+        # Look up fields and buttons in the same way.
+        for type_var, type_class, inline_flag in types:
 
-        # Find all of the fields in this class. These override
-        # any existing parent class fields with the same name.
-        for name, field in new_class.__dict__.iteritems():
-            if isinstance(field, FormField):
-                field.name = name
-                field_dict[name] = field
+            items = {}
 
-        # Sort the fields by the order in which they were defined.
-        new_class.__fields__ = sorted(field_dict.values())
-        new_class.__buttons__ = []
+            # Find all of the fields/buttons in the parent classes.
+            for base in bases:
+                for item in base.__dict__.get(type_var, []):
+                    items.setdefault(item.name, item)
+
+            # Find all of the fields/buttons in this class. These override
+            # any existing parent class items with the same name.
+            for name, item in new_class.__dict__.iteritems():
+
+                # Allow for inline fields defined within a form.
+                if inline_flag and getattr(item, inline_flag, False):
+                    item = item()
+                    setattr(new_class, name, item)
+
+                if isinstance(item, type_class):
+                    item.name = name
+                    items[name] = item
+
+            # Sort and remember the results.
+            setattr(new_class, type_var, sorted(items.values()))
 
         return new_class
 
@@ -94,12 +118,15 @@ class Form(object):
     """The base Form class to be used in Breeze apps."""
 
     __metaclass__ = FormClass
+    __method__ = 'post'
 
     def __init__(self, handler):
         """
         Validates and processes the given data.
         Performs a button action if necessary.???
         """
+
+        self.__handler__ = handler
 
         self.__errors__ = errors = {}
         self.__values__ = data = {}
@@ -108,28 +135,42 @@ class Form(object):
         for key in handler.request.arguments:
             data[key] = handler.get_argument(key)
 
+        # Find the button/action that should happen.
         for button in self.__buttons__:
             if button.name in data:
                 break
         else:
-            button = None
+            for button in self.__buttons__:
+                if button.default is not Undefined:
+                    break
+            else:
+                button = None
 
+        # Process the supplied data, if any.
         for field in self.__fields__:
 
             raw_value = data.get(field.name, Undefined)
 
-            # Skip the validation of this field if an action is not being
-            # performed, or there is no default value and no value was sent.
-            if not button and raw_value is field.default is Undefined:
-                continue
+            if raw_value is Undefined and not button:
+                # No action is being performed, and no value was supplied.
+                # Use a default value if possible, otherwise skip the field.
+                if field.default is Undefined:
+                    continue
+                else:
+                    raw_value = field.default
 
             # Set the value of the field, which performs validation.
             try:
                 setattr(self, field.name, raw_value)
             except (ValidationError, Undefined), error:
-                print 'errors', field.name, raw_value
-
                 errors[field.name] = error
+
+        # Perform the button action.
+        if button:
+            if errors:
+                errors[button.name] = True
+            else:
+                button(self, handler)
 
     def __iter__(self):
         """
@@ -155,39 +196,25 @@ class Form(object):
         if field_name in self.__errors__:
             del self.__errors__[field_name]
 
-    def __repr__(self):
-        kwargs = ('%s=%r' % item for item in self)
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(kwargs))
 
-
-class FormButton(object):
-
-    def __init__(self, action_func, **button_options):
-        pass
+################################################################################
+# Decorators for building form elements                                        #
+################################################################################
 
 
 def button(*args, **button_options):
     """
-    TODO
-    Creates a Button instance that will trigger something ????
+    Creates a Button instance that will trigger an action.
 
     """
 
     if button_options:
-        def decorator(action_func):
-            def create_button(**form_options):
-                button_options.update(form_options)
-                return FormButton(action_func, **button_options)
-            return create_button
-        return decorator
-    else:
-        action_func = args[0]
-        def create_button(**form_options):
-            button_options.update(form_options)
+        def create_button(action_func):
             return FormButton(action_func, **button_options)
         return create_button
-
-
+    else:
+        action_func = args[0]
+        return FormButton(action_func, **button_options)
 
 
 def formfield(*args, **field_options):
@@ -200,15 +227,19 @@ def formfield(*args, **field_options):
     if field_options:
         def decorator(validator_func):
             def create_field(**form_options):
-                field_options.update(form_options)
-                return FormField(validator_func, **field_options)
+                options = field_options.copy()
+                options.update(form_options)
+                return FormField(validator_func, **options)
+            create_field.formfield = True
             return create_field
         return decorator
     else:
         validator_func = args[0]
         def create_field(**form_options):
-            field_options.update(form_options)
-            return FormField(validator_func, **field_options)
+            options = field_options.copy()
+            options.update(form_options)
+            return FormField(validator_func, **options)
+        create_field.formfield = True
         return create_field
 
 
@@ -222,7 +253,16 @@ def integer(value):
     try:
         return int(value)
     except (TypeError, ValueError):
-        raise ValidationError('That is not a whole number')
+        raise ValidationError('This is not an integer.')
+
+
+@formfield(type='1+')
+def positive_integer(value):
+    try:
+        value = int(value)
+        assert value >= 1
+    except (TypeError, ValueError):
+        raise ValidationError('This is not a positive integer.')
 
 
 @formfield(type='json')

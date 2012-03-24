@@ -28,7 +28,9 @@ $('form[data-form-key] :input[name]').each(function() {
             $fieldGroup
             .removeClass('success')
             .addClass('error')
-            .find('.input-append')
+            .find('.controls div')
+            .children()
+            .last()
             .after(
                 $('<span class="help-inline">' + data.error + '</span>')
             );

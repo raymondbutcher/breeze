@@ -1,36 +1,13 @@
-A web site platform that will use Tornado Web and MongoDB.
+A web site platform using Tornado Web, MongoDB, Bootstrap.
+
+I think the features will fit somewhere between Django and WordPress.
 
 This is largely a learning experience with Tornado and asynchronous apps
-in general, but I hope to eventually make this a decent website platform.
+in general, but I hope to eventually make this a decent product.
 
 The general plan is to:
 
-1. Develop it to a point where I can create and customize a basic blog
-   using only the platform's interface.
-2. Keep enhancing it with any new features and ideas that come up.
-
-I do not wish to plan anything in-depth at this point, because seeing all
-of the requirements in one document would kill my motivation.
-
-Some overall goals include:
-
-* In-page admin interface using JavaScript
- * No admin URL, it's all through the main site
- * Inline editing of everything that is stored in the datase
- * Dialog boxes for editing non-public objects/data
- * Allow building dynamic pages via a JavaScript interface
-  * Developing this will be complicated
-
-* Allow flexible lists/feeds of various content types
-
-* Core content types might include:
- * Page
- * Auth (users/groups)
- * Comments ? What about disqus or something?
-
-* Some kind of app/plugin architecture
- * Articles
- * Forums
- * Github (to show latest commits, tickets, etc)
- * Menu
- 
+1. Make a solid base platform with admin, forms, auth, etc.
+2. Develop it to a point where I can create and customize a basic blog
+   using pretty much only the platform's interface.
+3. Keep enhancing it with any new features and ideas that come up.

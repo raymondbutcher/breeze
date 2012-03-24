@@ -1,0 +1,21 @@
+{% if button.hidden and button.name not in form.__errors__ %}
+    <input
+        type="hidden"
+        name="{{ button.name }}"
+        value="{{ button.label }}"
+    />
+{% else %}
+    {% if button.name in form.__errors__ %}
+        {% set button_class = ' btn-danger' %}
+    {% elif button.style and not form.__errors__ %}
+        {% set button_class = ' btn-%s' % button.style %}
+    {% else %}
+        {% set button_class = '' %}
+    {% end %}
+    <input
+        type="submit"
+        name="{{ button.name }}"
+        class="btn{{ button_class }}"
+        value="{{ button.label }}"
+    />
+{% end %}
