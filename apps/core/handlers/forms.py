@@ -24,8 +24,10 @@ class FormValidationHandler(MongoRequestHandler):
         else:
             raise tornado.web.HTTPError(404, 'Field "%s.%s" not found.' % (key, field_name))
 
+        raw_value = self.get_argument('value', Undefined)
+
         try:
-            field.clean(self.get_argument('value', Undefined))
+            yield tornado.gen.Task(field.validate, form, raw_value)
         except Exception, error:
             success = False
             error = unicode(error)

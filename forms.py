@@ -1,9 +1,13 @@
+import inspect
 import json
 import re
+import uimodules
+
+import tornado.gen
 
 
-def default_label(func):
-    return func.__name__.capitalize().replace('_', ' ')
+def default_label(name):
+    return name.capitalize().replace('_', ' ')
 
 
 class Undefined(Exception):
@@ -18,47 +22,49 @@ class FormField(object):
 
     _order = 0
 
-    def __init__(self, validator_func, default=Undefined, help_text='', hidden=False, label='', type=Undefined):
+    def __init__(self, validator_func, default=Undefined, help_text='', hidden=False, label='', type=Undefined, uimodule=uimodules.FormField):
 
-        self._validator_func = validator_func
         self._order = self.__class__._order
         self.__class__._order += 1
+
+        if 'callback' in inspect.getargspec(validator_func)[0]:
+            self.generator = True
+            validator_func = tornado.gen.engine(validator_func)
+        else:
+            self.generator = False
+
+        self._validator_func = validator_func
+        self._label = label
+        self._validated = {}
 
         self.default = default
         self.help_text = help_text
         self.hidden = hidden
-        self.label = label or default_label(validator_func)
+        self.uimodule = uimodule
 
         if type is Undefined:
-            self.type = default_label(validator_func).lower()
+            self.type = default_label(validator_func.__name__).lower()
         else:
             self.type = type
-
-    def __bool__(self):
-        return hasattr(self, 'value')
 
     def __cmp__(self, other):
         return cmp(self._order, other._order)
 
-    def __get__(self, form, obj_type):
-        return form[self.name]
+    @tornado.gen.engine
+    def validate(self, form, raw_value, callback=None):
+        if raw_value is self.default is Undefined:
+            raise ValidationError('This field cannot be blank')
+        if self.generator:
+            result = yield tornado.gen.Task(self._validator_func, form, raw_value)
+        else:
+            result = self._validator_func(form, raw_value)
+        callback(result)
 
-    def __repr__(self):
-        try:
-            return self.name
-        except AttributeError:
-            return super(FormField, self).__repr__()
-
-    def __set__(self, form, raw_value):
-        if raw_value is not Undefined:
-            form[self.name] = raw_value
-        self.clean(raw_value)
-
-    def clean(self, raw_value):
-        if raw_value is Undefined:
-            if self.default is Undefined:
-                raise ValidationError('This field cannot be blank')
-        return self._validator_func(raw_value)
+    @property
+    def label(self):
+        if not self._label:
+            self._label = default_label(self.name)
+        return self._label
 
 
 class FormButton(object):
@@ -67,7 +73,7 @@ class FormButton(object):
         self._action_func = action_func
         self.default = default
         self.hidden = hidden
-        self.label = label or default_label(action_func)
+        self.label = label or default_label(action_func.__name__)
         self.style = style
 
     def __call__(self, form, handler):
@@ -119,19 +125,23 @@ class Form(object):
 
     __metaclass__ = FormClass
     __method__ = 'post'
+    __uimodule__ = uimodules.WebForm
 
-    def __init__(self, handler):
+    @tornado.gen.engine
+    def __init__(self, handler, callback=None):
         """
         Validates and processes the given data.
-        Performs a button action if necessary.???
+        Performs a button action if necessary.
+
         """
 
         self.__handler__ = handler
-
+        self.__data__ = data = {}
+        self.__validated__ = validated = {}
         self.__errors__ = errors = {}
-        self.__values__ = data = {}
+        self.__button__ = None
 
-        data = {}
+        # Get the data from the request.
         for key in handler.request.arguments:
             data[key] = handler.get_argument(key)
 
@@ -151,26 +161,35 @@ class Form(object):
 
             raw_value = data.get(field.name, Undefined)
 
-            if raw_value is Undefined and not button:
-                # No action is being performed, and no value was supplied.
-                # Use a default value if possible, otherwise skip the field.
-                if field.default is Undefined:
-                    continue
-                else:
-                    raw_value = field.default
+            if raw_value is Undefined:
+                if not button or button.name not in data:
+                    # No action is being performed, and no value was supplied.
+                    # Use a default value if possible, or skip the field.
+                    if field.default is Undefined:
+                        continue
+                    else:
+                        raw_value = field.default
 
             # Set the value of the field, which performs validation.
             try:
-                setattr(self, field.name, raw_value)
+                data[field.name] = raw_value
+                validated[field.name] = yield tornado.gen.Task(field.validate, self, raw_value)
             except (ValidationError, Undefined), error:
                 errors[field.name] = error
 
-        # Perform the button action.
-        if button:
-            if errors:
+        if button and not errors:
+            self.__button__ = button
+        else:
+            self.__button__ = None
+            if button and errors:
                 errors[button.name] = True
-            else:
-                button(self, handler)
+
+        callback(self)
+
+    def __call__(self):
+        """Perform a button action, if there was one, returning the result."""
+        if self.__button__ and not self.__errors__:
+            return self.__button__(self, self.__handler__)
 
     def __iter__(self):
         """
@@ -186,15 +205,10 @@ class Form(object):
                 yield field.name, field.default
 
     def __getitem__(self, field_name):
-        return self.__values__[field_name]
+        return self.__data__.get(field_name, '')
 
     def __setitem__(self, field_name, raw_value):
-        self.__values__[field_name] = raw_value
-
-    def __delitem__(self, field_name):
-        del self.__values__[field_name]
-        if field_name in self.__errors__:
-            del self.__errors__[field_name]
+        self.__data__[field_name] = raw_value
 
 
 ################################################################################
@@ -219,8 +233,8 @@ def button(*args, **button_options):
 
 def formfield(*args, **field_options):
     """
-    Creates a FormField instance that uses the given function as its validator.
-    The resulting form field can then be used when defining a Form class.
+    Creates a function that returns a customized FormField instance The
+    resulting form field can be used when defining a Form class.
 
     """
 
@@ -249,24 +263,25 @@ def formfield(*args, **field_options):
 
 
 @formfield
-def integer(value):
+def integer(form, value):
     try:
         return int(value)
     except (TypeError, ValueError):
-        raise ValidationError('This is not an integer.')
+        raise ValidationError('This is not a valid number')
 
 
-@formfield(type='1+')
-def positive_integer(value):
+@formfield(type='integer')
+def positive_integer(form, value):
     try:
         value = int(value)
         assert value >= 1
+        return value
     except (TypeError, ValueError):
-        raise ValidationError('This is not a positive integer.')
+        raise ValidationError('This is not a valid number')
 
 
 @formfield(type='json')
-def json_string(value):
+def json_string(form, value):
     try:
         return json.loads(value)
     except ValueError, error:
@@ -274,12 +289,12 @@ def json_string(value):
 
 
 @formfield
-def text(value):
+def text(form, value):
     return unicode(value)
 
 
 @formfield
-def url(value):
+def url(form, value):
     value = unicode(value)
     if re.match(r'^(/|https?://.+).*', value):
         return value
@@ -288,7 +303,7 @@ def url(value):
 
 
 @formfield(type='path')
-def url_path(value):
+def url_path(form, value):
     value = unicode(value)
     if re.match(r'^/.*', value):
         return value

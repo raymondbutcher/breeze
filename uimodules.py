@@ -1,7 +1,8 @@
+import tornado.template
 import tornado.web
 
 
-class BaseModal(tornado.web.UIModule):
+class Modal(tornado.web.UIModule):
 
     template = 'modals/base.html'
 
@@ -48,25 +49,54 @@ class LinkModalButton(tornado.web.UIModule):
 
 class Form(tornado.web.UIModule):
 
+    def render(self, form):
+        if form.__uimodule__ is Form:
+            form.__uimodule__ = WebForm
+        return self.render_string('forms/form.html', form=form)
+
+
+class WebForm(tornado.web.UIModule):
+
+    template = 'forms/form-web.html'
+
     def embedded_javascript(self):
         return "$deps.load('breeze-forms');"
+
+    def context(self, **context):
+        """Subclasses can alter the context here."""
+        return context
 
     def render(self, form):
         context = {
             'form': form,
             'form_registry': self.handler.application.breeze.forms,
         }
-        return self.render_string('forms/form.html', **context)
+        context = self.context(**context)
+        return self.render_string(self.template, **context)
 
 
 class FormField(tornado.web.UIModule):
 
+    template = 'forms/fields/field.html'
+
     def render(self, form, field):
+        if field.uimodule is FormField:
+            field.uimodule = InputFormField
         context = {
             'form': form,
             'field': field,
         }
-        return self.render_string('forms/field.html', **context)
+        return self.render_string(self.template, **context)
+
+
+class InputFormField(FormField):
+
+    template = 'forms/fields/input.html'
+
+
+class CollectionFormField(FormField):
+
+    template = 'forms/fields/collection.html'
 
 
 class FormButton(tornado.web.UIModule):

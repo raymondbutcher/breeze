@@ -1,3 +1,6 @@
+html.no-js .if-js {display: none;}
+html.has-js .noscript {display: none;}
+
 body, section {
     padding-top: 60px; /* Push the content below the navbar */
 }
@@ -39,4 +42,9 @@ body, section {
 
 .error-page pre {
     margin: 30px 0 0 0;
+}
+
+
+tr.row-link {
+    cursor: pointer;
 }

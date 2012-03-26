@@ -1,0 +1,23 @@
+{% set form_key = form_registry.get_key(form) %}
+<form action="./{{ form_key }}" method="{{ form.__method__ }}" data-form-key="{{ form_key }}" class="form-horizontal">
+    <fieldset>
+
+        {% block fields %}
+            {% for field in form.__fields__ %}
+                {% module FormField(form, field) %}
+            {% end %}
+        {% end %}
+
+        {% block more %}{% end %}
+
+        {% block buttons %}
+            {% set show_buttons = bool([button for button in form.__buttons__ if not button.hidden ]) %}
+            <div class="form-actions{% if not show_buttons %} hide{% end %}">
+                {% for index, button in enumerate(form.__buttons__) %}
+                    {% module FormButton(form, button) %}
+                {% end %}
+            </div>
+        {% end %}
+
+    </fieldset>
+</form>

@@ -53,8 +53,8 @@ class AdminRegistry(Registry):
 
     def with_form(self, form):
         for admin in self.values():
-            for name, test_form in admin:
-                if form is test_form:
+            for name, form_class in admin:
+                if isinstance(form, form_class):
                     return admin
 
     @staticmethod

@@ -13,13 +13,3 @@ class PagesAdmin(Admin):
     hide = (
         (EditPage, 'Edit an existing page'),
     )
-
-
-#class SaveAndContinue(object):
-#
-#    form = CreatePage
-#    label = 'Save and continue'
-#
-#    def callback(self, form_result):
-#        page_id = form_result
-#        redirect_to_EditPage with page_id

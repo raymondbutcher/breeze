@@ -1,9 +1,9 @@
-from breeze.uimodules import BaseModal
+from breeze.uimodules import Modal
 
 
-class SignInModal(BaseModal):
+class SignInModal(Modal):
     template = 'core/auth/sign-in-modal.html'
 
 
-class RegisterModal(SignInModal):
+class RegisterModal(Modal):
     template = 'core/auth/register-modal.html'

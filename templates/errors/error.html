@@ -10,7 +10,7 @@
             <div class="hero-unit megatron">
                 <h2>{{ code }}: {{ message }}</h2>
                 {% if exception %}
-                <pre class="alert alert-error">{% raw exception %}</pre>
+                <pre class="alert alert-error">{% raw escape(exception) %}</pre>
                 {% end %}
             </div>
         </div>
