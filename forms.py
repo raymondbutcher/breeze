@@ -1,9 +1,10 @@
-import inspect
 import json
 import re
 import uimodules
 
 import tornado.gen
+
+from utils import is_engine
 
 
 def default_label(name):
@@ -27,9 +28,8 @@ class FormField(object):
         self._order = self.__class__._order
         self.__class__._order += 1
 
-        if 'callback' in inspect.getargspec(validator_func)[0]:
+        if is_engine(validator_func):
             self.generator = True
-            validator_func = tornado.gen.engine(validator_func)
         else:
             self.generator = False
 
@@ -52,8 +52,11 @@ class FormField(object):
 
     @tornado.gen.engine
     def validate(self, form, raw_value, callback=None):
-        if raw_value is self.default is Undefined:
-            raise ValidationError('This field cannot be blank')
+        if raw_value is Undefined:
+            if self.default is Undefined:
+                raise ValidationError('This field cannot be blank')
+            else:
+                raw_value = self.default
         if self.generator:
             result = yield tornado.gen.Task(self._validator_func, form, raw_value)
         else:
@@ -148,33 +151,43 @@ class Form(object):
         # Find the button/action that should happen.
         for button in self.__buttons__:
             if button.name in data:
+                default_button = None
                 break
         else:
             for button in self.__buttons__:
                 if button.default is not Undefined:
+                    default_button = button
                     break
             else:
                 button = None
+                default_button = None
 
-        # Process the supplied data, if any.
+        # Process all provided field data.
         for field in self.__fields__:
 
             raw_value = data.get(field.name, Undefined)
 
-            if raw_value is Undefined:
-                if not button or button.name not in data:
-                    # No action is being performed, and no value was supplied.
-                    # Use a default value if possible, or skip the field.
-                    if field.default is Undefined:
-                        continue
-                    else:
-                        raw_value = field.default
+            if raw_value is Undefined and (not button or default_button):
+                # A value was not supplied, but we're only displaying the form
+                # since there was no specific button action.
+                if field.default is Undefined:
+                    # This field has no value, but that is OK since there was
+                    # no requested action. Skip it and it will be blank.
+                    continue
+                else:
+                    # Use the default value. This will show up in the form.
+                    raw_value = field.default
 
-            # Set the value of the field, which performs validation.
-            try:
+            # Set the value of the field.
+            if raw_value is Undefined:
+                data[field.name] = ''
+            else:
                 data[field.name] = raw_value
+
+            # And perform validation.
+            try:
                 validated[field.name] = yield tornado.gen.Task(field.validate, self, raw_value)
-            except (ValidationError, Undefined), error:
+            except ValidationError, error:
                 errors[field.name] = error
 
         if button and not errors:
@@ -309,3 +322,49 @@ def url_path(form, value):
         return value
     else:
         raise ValidationError('Paths must start with "/"')
+
+
+def table(table_class, **kwargs):
+    options = {
+        'default': None,
+        'uimodule': uimodules.TableFormField,
+    }
+    options.update(kwargs)
+    @formfield
+    @tornado.gen.engine #added automatically
+    def table(self, value, callback=None):
+        table = yield tornado.gen.Task(table_class, self)
+        callback(table)
+    return table(**options)
+
+
+################################################################################
+# Form tables for displaying data                                              #
+################################################################################
+
+
+class FormTable(object):
+
+    @tornado.gen.engine
+    def __init__(self, form, callback=None):
+        assert hasattr(self, 'headers')
+        assert hasattr(self, 'columns')
+        self.form = form
+        self.data = yield tornado.gen.Task(self.source)
+        callback(self)
+
+    def __iter__(self):
+        for item in self.data:
+            yield tuple(self.create_row(item))
+
+    def create_row(self, item):
+        for column in self.columns:
+            text = item.get(column)
+            get_url = getattr(self, '%s_url' % column, None)
+            url = get_url and get_url(item) or ''
+            yield (text, url)
+
+    @tornado.gen.engine
+    def source(self, callback=None):
+        raise NotImplementedError
+        callback(None)

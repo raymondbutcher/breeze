@@ -94,9 +94,9 @@ class InputFormField(FormField):
     template = 'forms/fields/input.html'
 
 
-class CollectionFormField(FormField):
+class TableFormField(FormField):
 
-    template = 'forms/fields/collection.html'
+    template = 'forms/fields/table.html'
 
 
 class FormButton(tornado.web.UIModule):

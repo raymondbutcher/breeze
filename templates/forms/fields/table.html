@@ -1,0 +1,32 @@
+{% set table = form.__validated__[field.name] %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            {% for header in table.headers %}
+                <th>{{ header }}</th>
+            {% end %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table %}
+        <tr class="row-link">
+            {% for (column, url) in row %}
+            <td>
+                {% if url %}
+                    <a href="{{ url }}">{{ column }}</a>
+                {% else %}
+                    {{ column }}
+                {% end %}
+            </td>
+            {% end %}
+        </tr>
+        {% end %}
+        {% if not table.data %}
+        <tr>
+            <td colspan="{{ len(table.headers) }}">
+                None found
+            </td>
+        </tr>
+        {% end %}
+    </tbody>
+</table>

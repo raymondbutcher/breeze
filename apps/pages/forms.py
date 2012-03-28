@@ -2,10 +2,8 @@ import urllib
 
 import tornado.gen
 
-from collections import namedtuple
-
 from breeze import forms
-from breeze import uimodules
+from breeze import search
 
 
 class CreatePage(forms.Form):
@@ -34,6 +32,25 @@ class EditPage(CreatePage):
     _id = forms.text(hidden=True)
 
 
+class PageTable(forms.FormTable):
+
+    headers = ('Title', 'URL Path')
+    columns = ('title', 'path')
+
+    @tornado.gen.engine
+    def source(self, callback=None):
+        keywords = self.form.__validated__.get('keywords', '')
+        lookup = search.match_all_words(keywords, *self.columns)
+        handler = self.form.__handler__
+        result = yield tornado.gen.Task(handler.db.pages.find, lookup)
+        pages = handler.get_mongo_result(result, allow_none=True)
+        callback(pages or [])
+
+    def title_url(self, item):
+        form_key = self.form.__handler__.application.breeze.forms.get_key(EditPage)
+        return '%s?_id=%s' % (form_key, item['_id'])
+
+
 class BrowsePages(forms.Form):
 
     __method__ = 'get'
@@ -41,38 +58,7 @@ class BrowsePages(forms.Form):
     keywords = forms.text(default='', label='Search', type='')
     page = forms.positive_integer(default=1, hidden=True)
     perpage = forms.positive_integer(default=10, hidden=True)
-
-    @forms.formfield(default=None, uimodule=uimodules.CollectionFormField)
-    def collection(self, value, callback=None):
-
-        result = yield tornado.gen.Task(self.__handler__.db.pages.find)
-        pages = self.__handler__.get_mongo_result(result)
-
-        class Result(object):
-
-            columns = (
-                ('title', 'Title'),
-                ('path', 'URL Path'),
-            )
-
-            form_key = self.__handler__.application.breeze.forms.get_key(EditPage)
-
-            def __init__(self, **values):
-                self.values = values
-
-            def __iter__(self):
-                for name, title in self.columns:
-                    yield self.values.get(name)
-
-            @property
-            def url(self):
-                return '%s?_id=%s' % (self.form_key, self.values['_id'])
-
-        rows = []
-        for page in pages:
-            rows.append(Result(**page))
-
-        callback(rows)
+    pages = forms.table(PageTable)
 
     @forms.button(default=True, hidden=True)
     def search(self, handler):
@@ -81,19 +67,20 @@ class BrowsePages(forms.Form):
 
 #class CreatePageFormIdea(object):
 #
-#    method = 'get'  # Defaults to 'post'
-#    uimodule = CollectionForm  # Defaults to Form
+#    method = 'post'
+#    uimodule = uimodules.Form
 #
 #    class Fields:
-#        keywords = forms.text(default='', label='Search', type='')
-#        page = forms.positive_integer(default=1, hidden=True)
-#        perpage = forms.positive_integer(default=10, hidden=True)
-#
-#        @forms.formfield
-#        def special_field(form, raw_value):
-#            return int(raw_value) * 2453
+#        path = forms.url_path(label='URL path', help_text='e.g. /about/')
+#        title = forms.text(label='Page title')
+#        structure = forms.json_string(
+#            label='Content structure',
+#            help_text='A JSON string containing the grid structure.',
+#        )
 #
 #    class Buttons:
+#
+#        # If no buttons defined, maybe automatically create a Submit button?
 #
 #        @forms.button(style='primary')
 #        def save(form):
@@ -112,16 +99,7 @@ class BrowsePages(forms.Form):
 #
 #    def submit(self):
 #
-#        # Make a raw_values and values descriptor
-#        # setting a value on values will also set it on raw_values
-#        # but the values one will get validated after setting raw_values
+#        # Create page here...
+#        page_id = 452
+#        return page_id
 #
-#        self.raw_values['page'] = '10'
-#
-#        self['page'] = 1
-#        self['perpage'] = 10
-#
-#        start = (self['page'] - 1) * self['perpage']
-#        end = (self['page']) * self['perpage']
-#
-#        return range(start, end)
