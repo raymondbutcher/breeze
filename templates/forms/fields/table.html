@@ -1,16 +1,24 @@
-{% set table = form.__validated__[field.name] %}
-<table class="table table-striped">
+{% set table = form.cleaned.get(field.name) %}
+<table class="table">
     <thead>
         <tr>
+            {% if table.checkbox_field %}
+                <th width="1px"><input type="checkbox" title="Select all"/></th>
+            {% end %}
             {% for header in table.headers %}
                 <th>{{ header }}</th>
             {% end %}
         </tr>
     </thead>
     <tbody>
-        {% for row in table %}
-        <tr class="row-link">
-            {% for (column, url) in row %}
+        {% for item_data, columns, selected in table.get_rows() %}
+        <tr>
+            {% if table.checkbox_field %}
+                <td>
+                    <input type="checkbox" name="{{ field.name }}[]" value="{{ item_data[table.checkbox_field] }}"{% if selected %} checked="checked"{% end %}/>
+                </td>
+            {% end %}
+            {% for (column, url) in columns %}
             <td>
                 {% if url %}
                     <a href="{{ url }}">{{ column }}</a>
@@ -23,7 +31,7 @@
         {% end %}
         {% if not table.data %}
         <tr>
-            <td colspan="{{ len(table.headers) }}">
+            <td colspan="{{ len(table.headers) + int(bool(table.checkbox_field)) }}">
                 None found
             </td>
         </tr>

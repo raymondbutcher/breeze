@@ -50,8 +50,6 @@ class LinkModalButton(tornado.web.UIModule):
 class Form(tornado.web.UIModule):
 
     def render(self, form):
-        if form.__uimodule__ is Form:
-            form.__uimodule__ = WebForm
         return self.render_string('forms/form.html', form=form)
 
 
@@ -77,11 +75,9 @@ class WebForm(tornado.web.UIModule):
 
 class FormField(tornado.web.UIModule):
 
-    template = 'forms/fields/field.html'
+    template = 'forms/field.html'
 
     def render(self, form, field):
-        if field.uimodule is FormField:
-            field.uimodule = InputFormField
         context = {
             'form': form,
             'field': field,
@@ -89,9 +85,14 @@ class FormField(tornado.web.UIModule):
         return self.render_string(self.template, **context)
 
 
-class InputFormField(FormField):
+class TextFormField(FormField):
 
-    template = 'forms/fields/input.html'
+    template = 'forms/fields/text.html'
+
+
+class TextareaFormField(FormField):
+
+    template = 'forms/fields/textarea.html'
 
 
 class TableFormField(FormField):

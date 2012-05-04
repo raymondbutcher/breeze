@@ -1,4 +1,4 @@
 *.pyc
 .DS_Store
 server.conf
-static/aloha/*
+*.komodoproject

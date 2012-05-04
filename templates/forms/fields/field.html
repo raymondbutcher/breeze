@@ -1,1 +1,16 @@
-{% raw modules[field.uimodule.__name__](form, field) %}
+{% set field_error = form.errors.get(field.name) %}
+
+{% if field.hidden and not field_error %}
+    <input type="hidden" name="{{ field.name }}" value="{{ form.data.get(field.name, '') }}"/>
+{% else %}
+    
+    <div class="control-group{% if field_error %} error{% end %}">
+        <label class="control-label" for="form_{{ field.name }}">{{ field.get_label() }}</label>
+        <div class="controls">
+            {% block control %}{% end %}
+            {% if field.help_text %}
+            <p class="help-block">{{ field.help_text }}</p>
+            {% end %}
+        </div>
+    </div>
+{% end %}

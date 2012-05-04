@@ -1,0 +1,27 @@
+{% extends "forms/fields/field.html" %}
+
+{% block control %}
+
+    {% if field.tag %}
+    <div class="input-append">
+    {% end %}
+
+    <input
+        id="form_{{ field.name }}"
+        name="{{ field.name }}"
+        class="input-xlarge"
+        type="text"
+        value="{{ form.data.get(field.name, '') }}"
+    />{% if field.tag %}<span class="add-on">{{ field.tag }}</span>{% end %}
+
+    {% if field_error %}
+        <span class="help-inline noscript">
+            {{ field_error }}
+        </span>
+    {% end %}
+
+    {% if field.tag %}
+    </div>
+    {% end %}
+
+{% end %}

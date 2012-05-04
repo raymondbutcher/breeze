@@ -61,7 +61,7 @@ $('form[data-form-key] :input[name]').each(function() {
 
     // Get the element to which the tooltip will be attached.
     var $tooltip = $group
-        .find('.controls div')
+        .find('.controls')
         .find('.help-inline')
         .each(function() {
             // Move server-side errors out of the DOM and into a tooltip.
@@ -73,6 +73,9 @@ $('form[data-form-key] :input[name]').each(function() {
             $this.remove()
         })
         .end()
+        .children()
+        .not('p.help-block')
+        .last()
 
     // If there was a server-side error, then display it.
     showResult()

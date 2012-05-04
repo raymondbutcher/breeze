@@ -1,21 +1,43 @@
-{% if button.hidden and button.name not in form.__errors__ %}
+{% if button.hidden and button.name not in form.errors %}
     <input
         type="hidden"
         name="{{ button.name }}"
         value="{{ button.label }}"
     />
 {% else %}
-    {% if button.name in form.__errors__ %}
+    {% if button.name in form.errors %}
         {% set button_class = ' btn-danger' %}
-    {% elif button.style and not form.__errors__ %}
+    {% elif button.style and not form.errors %}
         {% set button_class = ' btn-%s' % button.style %}
     {% else %}
         {% set button_class = '' %}
     {% end %}
-    <input
-        type="submit"
-        name="{{ button.name }}"
-        class="btn{{ button_class }}"
-        value="{{ button.label }}"
-    />
+    {% if button.confirm %}
+        <a  href="#confirm-{{ button.name }}"
+            data-toggle="modal"
+            class="btn{{ button_class }}{% if button.extra_classes %} {{ button.extra_classes }}{% end %}"
+            >{{ button.label }}</a>
+        <div class="modal fade" id="confirm-{{ button.name }}">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>{{ button.label }}</h3>
+            </div>
+            <div class="modal-body">Are you sure?</div>
+            <div class="modal-footer">
+                <input
+                    type="submit"
+                    name="{{ button.name }}"
+                    class="btn{{ button_class }}"
+                    value="{{ button.label }}"
+                />
+            </div>
+        </div>
+    {% else %}
+        <input
+            type="submit"
+            name="{{ button.name }}"
+            class="btn{{ button_class }}{% if button.extra_classes %} {{ button.extra_classes }}{% end %}"
+            value="{{ button.label }}"
+        />
+    {% end %}
 {% end %}

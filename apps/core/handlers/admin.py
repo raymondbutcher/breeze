@@ -19,7 +19,7 @@ class AdminHandler(MongoRequestHandler):
                 current_form = yield tornado.gen.Task(form_class, self)
 
                 # Call the form, performing an action if requested.
-                current_form()
+                yield tornado.gen.Task(current_form)
 
                 # An action is able to finish a request, by rendering a page or
                 # redirecting to another page. If that happened, then there
