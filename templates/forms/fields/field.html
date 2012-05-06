@@ -3,14 +3,15 @@
 {% if field.hidden and not field_error %}
     <input type="hidden" name="{{ field.name }}" value="{{ form.data.get(field.name, '') }}"/>
 {% else %}
-    
-    <div class="control-group{% if field_error %} error{% end %}">
+    <div class="control-group{% if field_error %} error{% end %}"{% if not field.ajax_validation %} data-no-validation="true"{% end %}>
+        {% block control-group %}
         <label class="control-label" for="form_{{ field.name }}">{{ field.get_label() }}</label>
         <div class="controls">
-            {% block control %}{% end %}
+            {% block controls %}{% end %}
             {% if field.help_text %}
             <p class="help-block">{{ field.help_text }}</p>
             {% end %}
         </div>
+        {% end %}
     </div>
 {% end %}

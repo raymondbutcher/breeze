@@ -48,15 +48,14 @@ class EditPage(CreatePage):
 
     @tornado.gen.engine
     def initial_values(self, callback=None):
-        id_field = self.fields_dict['_id']
-        page_id = yield tornado.gen.Task(id_field.clean, self, self.data['_id'])
+        page_id = yield tornado.gen.Task(self.fields_dict['_id'].clean, self, self.data['_id'])
         result = yield tornado.gen.Task(self.handler.db.pages.find_one, {
             '_id': page_id,
         })
         page = self.handler.get_mongo_result(result)
         callback(page)
 
-    @forms.button(style='inverse', extra_classes='pull-right')
+    @forms.button(style='inverse', extra_classes='pull-right', require_valid_data=False)
     @tornado.gen.engine
     def delete(self, callback=None):
         lookup = {'_id': self.cleaned['_id']}

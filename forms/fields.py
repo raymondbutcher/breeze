@@ -13,6 +13,7 @@ class Field(object):
 
     _creation_order = 0
 
+    ajax_validation = True
     default = Undefined
     help_text = ''
     hidden = False
@@ -88,6 +89,19 @@ class Field(object):
 
         """
         raise NotImplementedError
+
+
+class BooleanField(Field):
+
+    ajax_validation = False
+    default = False
+    uimodule = uimodules.BooleanFormField
+
+    def read(self, stored_value):
+        return bool(stored_value)
+
+    def write(self, working_value):
+        return bool(working_value)
 
 
 class ObjectIdField(Field):
@@ -181,6 +195,26 @@ class TableField(Field):
         else:
             table = yield tornado.gen.Task(self.initialize, form, values)
         callback(table)
+
+
+class EmailField(TextField):
+
+    # Regular expression taken from Django.
+    _email_re = re.compile(
+        r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"  # dot-atom
+        # quoted-string, see also http://tools.ietf.org/html/rfc2822#section-3.2.5
+        r'|^"([\001-\010\013\014\016-\037!#-\[\]-\177]|\\[\001-\011\013\014\016-\177])*"'
+        r')@((?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?$)'  # domain
+        r'|\[(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\]$', re.IGNORECASE)  # literal form, ipv4 address (SMTP 4.1.3)
+
+    def write(self, working_value):
+
+        value = super(EmailField, self).write(working_value)
+
+        if self._email_re.match(value):
+            return value
+        else:
+            raise ValidationError('Invalid email address')
 
 
 class URLField(TextField):

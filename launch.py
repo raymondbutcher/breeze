@@ -3,6 +3,9 @@
 import cwd
 assert cwd
 
+#import hacks
+#assert hacks
+
 import os
 
 from tornado.ioloop import IOLoop
@@ -57,8 +60,9 @@ class Breeze(object):
 
     def get_urls(self):
         if options.setup:
-            return setup_urls
-        urls = []
+            urls = list(setup_urls)
+        else:
+            urls = []
         for app_name, app in self.apps.iteritems():
             if hasattr(app, 'urls'):
                 try:

@@ -9,7 +9,7 @@ from breeze.utils import default_label, is_engine
 
 class FormButton(object):
 
-    def __init__(self, action_func, confirm=False, default=Undefined, hidden=False, label='', style='', extra_classes=''):
+    def __init__(self, action_func, confirm=False, default=Undefined, hidden=False, label='', style='', extra_classes='', require_valid_data=True):
         self._action_func = action_func
         self._generator = is_engine(action_func)
         self.confirm = confirm
@@ -18,6 +18,7 @@ class FormButton(object):
         self.label = label or default_label(action_func.__name__)
         self.style = style
         self.extra_classes = extra_classes
+        self.require_valid_data = require_valid_data
 
     @tornado.gen.engine
     def __call__(self, form, callback=None):
@@ -156,7 +157,7 @@ class Form(object):
                 self.errors[field.name] = error
 
         # Remember which button, if any, was clicked.
-        if button and self.errors:
+        if button and self.errors and button.require_valid_data:
             self.button = None
             self.errors[button.name] = True
         else:

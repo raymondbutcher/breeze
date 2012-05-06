@@ -1,6 +1,6 @@
 {% extends "forms/fields/field.html" %}
 
-{% block control %}
+{% block controls %}
     <textarea name="{{ field.name }}" class="input-xlarge" id="textarea"{% if hasattr(field, 'rows') %} rows="{{ field.rows }}"{% end %}>{#
         #}{{ form.data.get(field.name, '').replace(r'\n', '\n') }}{#
     #}</textarea>

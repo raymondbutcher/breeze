@@ -1,5 +1,5 @@
 // Perform field validation automatically via AJAX.
-$('form[data-form-key] :input[name]').each(function() {
+$('form[data-form-key] .control-group:not([data-no-validation]) :input[name]').each(function() {
 
     function showResult() {
         /* Display the result of the field validation. */
@@ -98,6 +98,5 @@ $('form[data-form-key] :input[name]').each(function() {
             }
         }
     })
-
 
 })

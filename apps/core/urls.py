@@ -1,7 +1,6 @@
 from handlers.admin import AdminHandler
 from handlers.auth import GoogleAuthHandler, LogoutAuthHandler, RegisterAuthHandler, SignInAuthHandler
 from handlers.forms import FormValidationHandler
-from handlers.setup import SetupHandler
 
 
 # Core URLs for all Breeze installations.
@@ -19,7 +18,8 @@ urls = (
 )
 
 
-# These will be used only in setup mode.
+# These will be used only in setup mode, in addition to normal URLs.
+# It just makes the Admin require no authentication.
 setup_urls = (
-    (r'.*', SetupHandler),
+    ('/admin/([a-zA-Z]+\.[a-zA-Z]+)?', AdminHandler, {'require_authentication': False}),
 )

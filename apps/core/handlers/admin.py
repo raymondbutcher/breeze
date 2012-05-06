@@ -6,19 +6,25 @@ from breeze.handlers import MongoRequestHandler
 
 class AdminHandler(MongoRequestHandler):
 
-    @tornado.web.authenticated
+    def initialize(self, require_authentication=True):
+        if require_authentication:
+            self.handle_method = self.handle_request_authenticated
+        else:
+            self.handle_method = self.handle_request
+
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def handle(self, key, require_form=False):
+    def handle_request(self, key, require_form=False):
 
         if key:
             form_class = self.application.breeze.forms.get(key)
             if form_class:
 
-                # Create the form using this handler.
+                # Create the form instance, passing in this handler so it can
+                # access request data and the mongo database etc.
                 current_form = yield tornado.gen.Task(form_class, self)
 
-                # Call the form, performing an action if requested.
+                # Call the form itself, performing an action if requested.
                 yield tornado.gen.Task(current_form)
 
                 # An action is able to finish a request, by rendering a page or
@@ -50,8 +56,10 @@ class AdminHandler(MongoRequestHandler):
         }
         self.render('core/admin/admin.html', **context)
 
+    handle_request_authenticated = tornado.web.authenticated(handle_request)
+
     def get(self, key=None):
-        self.handle(key)
+        self.handle_method(key)
 
     def post(self, key):
-        self.handle(key, require_form=True)
+        self.handle_method(key, require_form=True)

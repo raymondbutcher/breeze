@@ -85,6 +85,11 @@ class FormField(tornado.web.UIModule):
         return self.render_string(self.template, **context)
 
 
+class BooleanFormField(FormField):
+
+    template = 'forms/fields/checkbox.html'
+
+
 class TextFormField(FormField):
 
     template = 'forms/fields/text.html'

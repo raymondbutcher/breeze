@@ -1,0 +1,12 @@
+{% extends "forms/fields/field.html" %}
+
+{% block controls %}
+    <input
+        id="form_{{ field.name }}"
+        name="{{ field.name }}"
+        type="checkbox"
+        {% if form.data.get(field.name) %}
+        checked="checked"
+        {% end %}
+    />
+{% end %}

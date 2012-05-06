@@ -35,8 +35,6 @@ class FormValidationHandler(MongoRequestHandler):
             success = True
             error = False
 
-        print success, error
-
         self.finish({
             'success': success,
             'error': error,
