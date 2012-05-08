@@ -3,6 +3,7 @@
 {% block title %}{{ page['title'] }}{% end %}
 
 {% block content %}
+    {% if page['path'] == '/' %}
 
     <div class="container">
 
@@ -56,12 +57,14 @@
         </div>
 
     </div>
-    
-    {#
-    <div class="container-fluid" id="page-{{ page['_id'] }}">
-        <div class="row-fluid">
+
+    {% else %}
+
+    {% set fluid = page.get('fluid', False) %}
+
+    <div class="container{% if fluid %}-fluid{% end %}" id="page-{{ page['_id'] }}">
         {% for row in page['structure'] %}
-        <div class="row-fluid">
+        <div class="row{% if fluid %}-fluid{% end %}">
             {% for column in row %}
             <div class="span{{ column['colspan'] }}">
                 {% module PageContent(column['content']) %}
@@ -70,6 +73,7 @@
         </div>
         {% end %}
     </div>
-    #}
+
+    {% end %}
 
 {% end%}

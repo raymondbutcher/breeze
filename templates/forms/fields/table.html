@@ -5,8 +5,10 @@
             {% if table.checkbox_field %}
                 <th width="1px"><input type="checkbox" title="Select all"/></th>
             {% end %}
-            {% for header in table.headers %}
-                <th>{{ header }}</th>
+            {% for column in table.columns %}
+                <th>
+                    {{ getattr(table, '%s_header' % column, None) or column.title() }}
+                </th>
             {% end %}
         </tr>
     </thead>

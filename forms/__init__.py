@@ -205,14 +205,14 @@ def button(*args, **button_options):
 
 class FormTable(object):
 
+    columns = ()
     data = []
     selected = []
-    headers = None
     checkbox_field = None
 
     def __init__(self, selected=None):
         # TODO: move assertion into a metaclass
-        assert hasattr(self, 'columns')
+        assert self.columns
         self.set_selected(selected or [])
 
     def _is_selected(self, item):
@@ -234,6 +234,13 @@ class FormTable(object):
                 if self._is_selected(item):
                     yield item
 
+    def get_url(self, column, item):
+        get_url = getattr(self, '%s_url' % column, None)
+        if get_url:
+            return get_url(item)
+        else:
+            return ''
+
     def set_selected(self, selected):
         self.selected = [unicode(item) for item in selected]
 
@@ -244,6 +251,4 @@ class FormTable(object):
     def create_columns(self, item):
         for column in self.columns:
             text = item.get(column)
-            get_url = getattr(self, '%s_url' % column, None)
-            url = get_url and get_url(item) or ''
-            yield (text, url)
+            yield (text, self.get_url(column, item))

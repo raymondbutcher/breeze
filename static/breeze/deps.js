@@ -25,8 +25,8 @@
     , addEventListener = 'addEventListener', onreadystatechange = 'onreadystatechange'
     , isCSS = /^.+\.css(\?.*)?$/
 
-  function every(ar, fn, i) {
-    for (i = 0, j = ar.length; i < j; ++i) if (!fn(ar[i])) return f
+  function every(ar, fn) {
+    for (var i = 0, j = ar.length; i < j; ++i) if (!fn(ar[i])) return f
     return 1
   }
   function each(ar, fn) {

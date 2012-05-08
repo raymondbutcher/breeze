@@ -85,8 +85,10 @@
     {% block content %}{% end %}
 
     {% block register-modals %}
-        {% module SignInModal(next_url=request.uri, js=True, id="sign-in") %}
-        {% module RegisterModal(next_url=request.uri, js=True, id="register") %}
+        {% if not current_user %}
+            {% module SignInModal(next_url=request.uri, js=True, id="sign-in") %}
+            {% module RegisterModal(next_url=request.uri, js=True, id="register") %}
+        {% end %}
     {% end %}
 
     <script type="text/javascript" src="{{ static_url('breeze/deps.js') }}"></script>
@@ -95,6 +97,14 @@
         $deps.register({
             'jquery': {
                 path: 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'
+            },
+            'json': {
+                requires: 'jquery',
+                path: '{{ static_url("jquery/json/jquery.json-2.3.min.js") }}'
+            },
+            'autosize': {
+                requires: 'jquery',
+                path: '{{ static_url("jquery/autosize/jquery.autosize-min.js") }}'
             },
             //'cookie': {
             //    requires: 'jquery',
@@ -109,8 +119,12 @@
                 path: '{{ static_url("breeze/breeze.js") }}'
             },
             'breeze-forms': {
-                requires: 'breeze',
+                requires: ['breeze', 'autosize'],
                 path: '{{ static_url("breeze/forms.js") }}'
+            },
+            'breeze-forms-pages': {
+                requires: ['breeze-forms', 'json'],
+                path: '{{ static_url("breeze/forms-pages.js") }}'
             }
         });
 
