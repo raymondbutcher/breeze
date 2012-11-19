@@ -1,11 +1,11 @@
 <div    class="modal {% if js %}fade{% end %}"
         id="{{ id }}">
     <div class="modal-header">
-        <a  class="close"
+        <a  class="close go-back"
             {% if js %}
                 data-dismiss="modal"
             {% else %}
-                href="{{ next_url }}"
+                href="/"
             {% end %}>
             ×
         </a>

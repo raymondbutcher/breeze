@@ -20,8 +20,8 @@
 
     <style type="text/css">
         .edit-page-content {
-            width: 80%;
-            margin-left: -40%;
+            width: 90%;
+            margin-left: -45%;
         }
         .edit-page-content .table thead th {
             cursor: default;
@@ -112,9 +112,11 @@
         <div class="modal-body">
             <table class="table table-bordered">
                 <thead>
-                    {% for count in xrange(12) %}
-                    <th width="8%" rel="tooltip" title="Column {{ count + 1 }}">{{ count + 1 }}</th>
-                    {% end %}
+                    <tr>
+                        {% for count in xrange(12) %}
+                        <th width="8%" rel="tooltip" title="Column {{ count + 1 }}">{{ count + 1 }}</th>
+                        {% end %}
+                    </tr>
                 </thead>
                 <tbody></tbody>
             </table>

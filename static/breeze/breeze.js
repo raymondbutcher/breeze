@@ -65,4 +65,10 @@
         })
     })
 
+    // Handle go-back links.
+    $('body').on('click', 'a.go-back', function(event) {
+        history.back()
+        event.preventDefault()
+    })
+
 })()

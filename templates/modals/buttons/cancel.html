@@ -1,9 +1,9 @@
-<a  class="btn" 
+<a  class="btn go-back" 
     {% if js %}
         href="#"
         onclick="$(this).parents('.modal').modal('hide'); return false"
     {% else %}
-        href="{{ next_url }}"
+        href="/"
     {% end %}>
     {{ label }}
 </a>

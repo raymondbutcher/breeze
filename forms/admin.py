@@ -145,7 +145,6 @@ class CreateForm(forms.Form):
 
     @tornado.gen.engine
     def _save_item(self, callback=None):
-        print self.cleaned
         lookup = {'_id': self.cleaned['_id']}
         document = self.cleaned
         upsert = True

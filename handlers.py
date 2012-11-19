@@ -64,6 +64,7 @@ class ErrorMixin(object):
         context = {
             'code': status_code,
             'message': httplib.responses[status_code],
+            'exception': None,
         }
         if self.settings['debug']:
             if 'exc_info' in kwargs:

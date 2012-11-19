@@ -3,15 +3,13 @@
 import cwd
 assert cwd
 
-#import hacks
-#assert hacks
-
 import os
 
 from tornado.ioloop import IOLoop
 from tornado.options import options, parse_command_line, parse_config_file
 from tornado.web import Application
 
+from breeze import uimodules
 from breeze.apps.core.urls import setup_urls
 from breeze.registry import AdminRegistry, AppRegistry, FormRegistry
 from breeze.template import MapTemplateLoader
@@ -52,7 +50,6 @@ class Breeze(object):
         return MapTemplateLoader(dict(get_template_paths()), self.breeze_dir)
 
     def get_ui_modules(self):
-        from breeze import uimodules
         yield uimodules
         for app in self.apps.values():
             if hasattr(app, 'uimodules'):

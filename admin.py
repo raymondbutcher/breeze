@@ -32,7 +32,8 @@ class Admin(object):
 
     __metaclass__ = AdminClass
 
-    hide = []
+    show = ()
+    hide = ()
 
     def __init__(self):
 
