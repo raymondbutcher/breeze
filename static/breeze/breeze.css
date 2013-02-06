@@ -48,3 +48,9 @@ body, section {
 tr.row-link {
     cursor: pointer;
 }
+
+
+input.datepicker,
+input.timepicker {
+    
+}

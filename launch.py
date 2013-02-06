@@ -10,24 +10,23 @@ from tornado.options import options, parse_command_line, parse_config_file
 from tornado.web import Application
 
 from breeze import uimodules
+from breeze.apps.core.handlers.errors import NotFoundHandler
+from breeze.apps.core.handlers.static import AppStaticFileHandler
 from breeze.apps.core.urls import setup_urls
 from breeze.registry import AdminRegistry, AppRegistry, FormRegistry
 from breeze.template import MapTemplateLoader
 
 
-# TODO: Static paths within apps?
-
-
 class Breeze(object):
 
-    def __init__(self, project_dir):
+    def __init__(self, project_dir, exclude_apps=()):
 
         self.project_dir = project_dir
-        self.breeze_dir = os.path.dirname(__file__)
+        self.breeze_dir = os.path.abspath(os.path.dirname(__file__))
 
         self.parse_options()
 
-        self.apps = AppRegistry(self.breeze_dir, self.project_dir)
+        self.apps = AppRegistry((self.breeze_dir, self.project_dir), exclude=exclude_apps)
         self.admins = AdminRegistry(self.apps)
         self.forms = FormRegistry(self.apps)
 
@@ -36,18 +35,24 @@ class Breeze(object):
             'debug': options.debug,
             'login_url': '/sign-in/',
             'static_path': os.path.join(self.breeze_dir, 'static'),
+            'static_handler_class': AppStaticFileHandler.create(self),
             'template_loader': self.get_template_loader(),
             'ui_modules': list(self.get_ui_modules()),
         }
 
     def get_template_loader(self):
         def get_template_paths():
+            yield 'breeze', os.path.join(self.breeze_dir, 'templates')
             for app in self.apps.keys():
                 for root in (self.breeze_dir, self.project_dir):
                     path = os.path.join(root, 'apps', app, 'templates')
                     if os.path.exists(path):
                         yield app, path
-        return MapTemplateLoader(dict(get_template_paths()), self.breeze_dir)
+        main_templates = (
+            os.path.join(self.project_dir, 'templates'),
+            os.path.join(self.breeze_dir, 'templates'),
+        )
+        return MapTemplateLoader(dict(get_template_paths()), *main_templates)
 
     def get_ui_modules(self):
         yield uimodules
@@ -66,6 +71,7 @@ class Breeze(object):
                     urls += app.urls.urls
                 except AttributeError, error:
                     raise AttributeError('%s: %s' % (app_name, error))
+        urls.append((r'/.*', NotFoundHandler))
         return urls
 
     def parse_options(self):

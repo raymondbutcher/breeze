@@ -186,6 +186,7 @@ var $deps = (function($loader) {
                 $loader(script.path, scriptName);
             }
         }
+        return $deps;
     }
     
     function ready(requiredScripts, callbackFunction) {
@@ -195,6 +196,7 @@ var $deps = (function($loader) {
           handles all dependencies as configured in the registry.
         */
         $loader.ready(requiredScripts, callbackFunction, loadScripts);
+        return $deps;
     }
     
     function registerScripts(info) {
@@ -202,6 +204,7 @@ var $deps = (function($loader) {
         for (var scriptName in info) {
             registry[scriptName] = info[scriptName]
         }
+        return $deps;
     }
     
     return {

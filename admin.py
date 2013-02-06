@@ -1,6 +1,6 @@
 import inspect
 
-from forms import Form
+from breeze.forms import Form
 
 
 class AdminClass(type):

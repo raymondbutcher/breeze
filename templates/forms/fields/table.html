@@ -7,7 +7,7 @@
             {% end %}
             {% for column in table.columns %}
                 <th>
-                    {{ getattr(table, '%s_header' % column, None) or column.title() }}
+                    {{ getattr(table, '%s_header' % column, None) or column.replace('_', ' ').title() }}
                 </th>
             {% end %}
         </tr>
@@ -33,7 +33,7 @@
         {% end %}
         {% if not table.data %}
         <tr>
-            <td colspan="{{ len(table.headers) + int(bool(table.checkbox_field)) }}">
+            <td colspan="{{ len(table.columns) + int(bool(table.checkbox_field)) }}">
                 None found
             </td>
         </tr>

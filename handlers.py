@@ -1,7 +1,5 @@
 import asyncmongo
-#import bson.json_util
 import httplib
-#import json
 import tornado.escape
 import tornado.template
 import tornado.web
@@ -64,30 +62,23 @@ class ErrorMixin(object):
         context = {
             'code': status_code,
             'message': httplib.responses[status_code],
-            'exception': None,
+            'exception': '',
         }
-        if self.settings['debug']:
-            if 'exc_info' in kwargs:
+        if 'exc_info' in kwargs:
+            context['error_object'] = kwargs['exc_info'][1]
+            if self.settings['debug']:
                 context['exception'] = ''.join(traceback.format_exception(*kwargs['exc_info']))
         try:
             try:
-                self.render('errors/%d.html' % status_code, **context)
+                self.render('breeze/errors/%d.html' % status_code, **context)
             except IOError:
-                self.render('errors/error.html', **context)
+                self.render('breeze/errors/error.html', **context)
         except Exception:
             basic_template = tornado.template.Template(self.basic_error_template)
             self.write(basic_template.generate(**context))
 
 
 class MongoMixin(object):
-
-    #@staticmethod
-    #def json_decode(data):
-    #    return json.loads(data, default=bson.json_util.object_hook)
-    #
-    #@staticmethod
-    #def json_encode(data):
-    #    return json.dumps(data, default=bson.json_util.default)
 
     @property
     def db(self):
@@ -114,7 +105,7 @@ class MongoMixin(object):
         if not result:
             if allow_none:
                 return None
-            raise tornado.web.HTTPError(404, 'Page object not found')
+            raise tornado.web.HTTPError(404, 'Object not found')
         return result
 
 

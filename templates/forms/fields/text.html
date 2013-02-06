@@ -6,7 +6,7 @@
     <div class="input-append">
     {% end %}
 
-    <input
+    <input {% block input-attributes %}{% end%}
         id="form_{{ field.name }}"
         name="{{ field.name }}"
         class="input-xlarge"

@@ -90,6 +90,14 @@ class BooleanFormField(FormField):
     template = 'forms/fields/checkbox.html'
 
 
+class DateTimeFormField(FormField):
+
+    def embedded_javascript(self):
+        return "$deps.load('breeze-forms-datetime');"
+
+    template = 'forms/fields/datetime.html'
+
+
 class TextFormField(FormField):
 
     template = 'forms/fields/text.html'

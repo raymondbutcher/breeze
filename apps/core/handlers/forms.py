@@ -7,7 +7,6 @@ from breeze.handlers import MongoRequestHandler
 
 class FormValidationHandler(MongoRequestHandler):
 
-    @tornado.web.authenticated
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self, key):
@@ -16,7 +15,11 @@ class FormValidationHandler(MongoRequestHandler):
         if not form:
             raise tornado.web.HTTPError(404, 'Form "%s" not found.' % key)
 
-        field_name = self.get_argument('name')
+        field_name = self.get_argument('name', '')
+
+        multi_value = field_name.endswith('[]')
+        if multi_value:
+            field_name = field_name[:-2]
 
         for field in form.fields:
             if field.name == field_name:
@@ -24,7 +27,18 @@ class FormValidationHandler(MongoRequestHandler):
         else:
             raise tornado.web.HTTPError(404, 'Field "%s.%s" not found.' % (key, field_name))
 
-        raw_value = self.get_argument('value', Undefined)
+        if multi_value:
+            raw_value = []
+            values = self.get_argument('values')
+            for index in xrange(int(values)):
+                value = self.get_argument('value[%d]' % index, '')
+                raw_value.append(value)
+        else:
+            raw_value = self.get_argument('value', '')
+            raw_value = raw_value.strip()
+
+        if not raw_value:
+            raw_value = Undefined
 
         try:
             yield tornado.gen.Task(field.clean, form, raw_value)

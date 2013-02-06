@@ -11,10 +11,12 @@
         <script type="text/javascript">
             document.documentElement.className = 'has-js';
         </script>
+        {% block styles %}
         <link href="{{ static_url('bootstrap/css/bootstrap.css') }}" rel="stylesheet">
         <link href="{{ static_url('breeze/breeze.css') }}" rel="stylesheet">
         <link href="{{ static_url('bootstrap/css/bootstrap-responsive.css') }}" rel="stylesheet">
-
+        {% block extra-styles %}{% end %}
+        {% end %}
 
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -28,8 +30,9 @@
         <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">-->
     </head>
 
-    <body>
+    <body class="{% block slug %}breeze{% end %}">
 
+    {% block navbar %}
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
@@ -38,20 +41,22 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <a class="brand" href="/#">Breeze Website Platform</a>
+                <a class="brand" href="/#">{% block brand %}Breeze Website Platform{% end %}</a>
                 <div class="nav-collapse">
                     <ul class="nav">
-                        {% set menu = (
-                            ('/', 'Welcome'),
-                            ('/admin/', 'Admin'),
-                        ) %}
-                        {% for item in menu %}
-                            {% set href, label = item %}
-                            <li{% if (href == '/' and request.path == '/') or (href != '/' and request.path.startswith(href)) %} class="active"{% end %}>
-                                <a href="{{ href }}#">
-                                    {{ label }}
-                                </a>
-                            </li>
+                        {% block menu-items %}
+                            {% set menu = (
+                                ('/', 'Welcome'),
+                                ('/admin/', 'Admin'),
+                            ) %}
+                            {% for item in menu %}
+                                {% set href, label = item %}
+                                <li{% if (href == '/' and request.path == '/') or (href != '/' and request.path.startswith(href)) %} class="active"{% end %}>
+                                    <a href="{{ href }}#">
+                                        {{ label }}
+                                    </a>
+                                </li>
+                            {% end %}
                         {% end %}
                     </ul>
                     <ul class="nav pull-right">
@@ -81,8 +86,11 @@
             </div>
         </div>
     </div>
+    {% end %}
 
     {% block content %}{% end %}
+
+    {% block footer %}{% end %}
 
     {% block register-modals %}
         {% if not current_user %}
@@ -110,6 +118,15 @@
             //    requires: 'jquery',
             //    path: '{{ static_url("jquery/cookie/jquery.cookie.js") }}'
             //},
+            'timepicker': {
+                requires: 'jquery',
+                path: [
+                    '{{ static_url("jquery/timepicker/jquery.timepicker.min.js") }}',
+                    '{{ static_url("jquery/timepicker/jquery.timepicker.css") }}',
+                    '{{ static_url("jquery/timepicker/lib/base.js") }}',
+                    '{{ static_url("jquery/timepicker/lib/base.css") }}'
+                ]
+            },
             'bootstrap': {
                 requires: 'jquery',
                 path: '{{ static_url("bootstrap/js/bootstrap.js") }}'
@@ -122,11 +139,17 @@
                 requires: ['breeze', 'autosize'],
                 path: '{{ static_url("breeze/forms.js") }}'
             },
+            'breeze-forms-datetime': {
+                requires: ['breeze-forms', 'timepicker'],
+                path: '{{ static_url("breeze/forms-datetime.js") }}'
+            },
             'breeze-forms-pages': {
                 requires: ['breeze-forms', 'json'],
                 path: '{{ static_url("breeze/forms-pages.js") }}'
             }
         });
+
+        {% block extra-js %}{% end %}
 
         $deps.load('breeze');
 

@@ -1,9 +1,37 @@
 // Perform field validation automatically via AJAX.
 $('form[data-form-key] .control-group:not([data-no-validation]) :input[name]').each(function() {
 
+    var $field = $(this)
+    var $group = $field.parents('.control-group')
+    var fieldName = $field.attr('name')
+    var multiValue = new Boolean(fieldName.match(/\[\]$/))
+    var formkey = $field.parents('form').attr('data-form-key')
+    var url = '/form-validation/' + formkey
+    var timeout
+    var cache = {}
+
+    function getFieldValue() {
+        if (multiValue) {
+            var result = {},
+                values = $field
+                        .parent()
+                        .find('[name="' + fieldName + '"]')
+                        .map(function(){
+                            return $(this).val() || ''
+                        })
+                        .get()
+            for (i=0; i<values.length; i++) {
+                result[i] = values[i]
+            }
+            return result
+        } else {
+            return $field.val()
+        }
+    }
+
     function showResult() {
         /* Display the result of the field validation. */
-        var data = cache['v' + $field.val()] || {}
+        var data = cache['v' + getFieldValue()] || {}
         if (data.error) {
             $group
                 .removeClass('success')
@@ -35,9 +63,13 @@ $('form[data-form-key] .control-group:not([data-no-validation]) :input[name]').e
     function validateField() {
         /* Make an AJAX request for this field and show the result. */
         var postData = {
-            name: $field.attr('name'),
-            value: $field.val()
+            name: fieldName,
+            value: getFieldValue()
         }
+        if (multiValue) {
+            postData.values = postData.value.length
+        }
+        console.log(postData);
         $.ajax({
             url: url,
             type: 'POST',
@@ -52,13 +84,6 @@ $('form[data-form-key] .control-group:not([data-no-validation]) :input[name]').e
         })
     }
 
-    var $field = $(this)
-    var $group = $field.parents('.control-group')
-    var formkey = $field.parents('form').attr('data-form-key')
-    var url = '/form-validation/' + formkey
-    var timeout
-    var cache = {}
-
     // Get the element to which the tooltip will be attached.
     var $tooltip = $group
         .find('.controls')
@@ -66,7 +91,7 @@ $('form[data-form-key] .control-group:not([data-no-validation]) :input[name]').e
         .each(function() {
             // Move server-side errors out of the DOM and into a tooltip.
             var $this = $(this)
-            cache['v' + $field.val()] = {
+            cache['v' + getFieldValue()] = {
                 success: false,
                 error: $this.text()
             }

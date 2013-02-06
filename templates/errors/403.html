@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Not allowed{% end %}
+
+{% block content %}
+
+<div class="container error-page">
+    <div class="row">
+        <div class="span12">
+            <div class="hero-unit megatron">
+                <h2>{{ message }}</h2>
+                {% if getattr(error_object, 'log_message', None) %}
+                    <p>{{ error_object.log_message }}</p>
+                {% end %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% end %}

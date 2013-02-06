@@ -3,12 +3,12 @@ import inspect
 import os
 import sys
 
-from admin import Admin
-from forms import Form
+from breeze.admin import Admin
+from breeze.forms import Form
+from breeze.utils import unique_items
 
-
-# Import the following when loading the apps.
-APP_IMPORTS = ['admin', 'forms', 'uimodules', 'urls']
+# Import the following when loading apps.
+APP_IMPORTS = ('admin', 'forms', 'uimodules', 'urls')
 
 
 class Registry(dict):
@@ -21,14 +21,18 @@ class Registry(dict):
 
 class AppRegistry(Registry):
 
-    def __init__(self, *app_paths):
-
-        for root in app_paths:
+    def __init__(self, paths, exclude=()):
+        for root in unique_items(paths):
             app_dir = os.path.join(root, 'apps')
+            project_name = os.path.basename(root)
             pattern = os.path.join(app_dir, '*', '__init__.py')
             for path in glob.iglob(pattern):
                 app_name = os.path.basename(os.path.dirname(path))
-                app_path = 'breeze.apps.%s' % app_name
+                if app_name in exclude:
+                    continue
+                elif app_name == 'breeze':
+                    raise ValueError('You cannot name an app "breeze"')
+                app_path = '%s.apps.%s' % (project_name, app_name)
                 __import__(app_path, fromlist=APP_IMPORTS)
                 self[app_name] = sys.modules[app_path]
                 if not hasattr(self[app_name], 'title'):

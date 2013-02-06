@@ -56,7 +56,12 @@ class AdminHandler(MongoRequestHandler):
         }
         self.render('core/admin/admin.html', **context)
 
-    handle_request_authenticated = tornado.web.authenticated(handle_request)
+    @tornado.web.authenticated
+    def handle_request_authenticated(self, *args, **kwargs):
+        if self.get_secure_cookie('auth_admin') or self.get_secure_cookie('auth_superuser'):
+            return self.handle_request(*args, **kwargs)
+        else:
+            raise tornado.web.HTTPError(403, 'You must be an admin user to access this page.')
 
     def get(self, key=None):
         self.handle_method(key)

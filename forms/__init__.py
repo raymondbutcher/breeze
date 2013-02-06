@@ -1,8 +1,6 @@
-import uimodules
-
 import tornado.gen
 
-from breeze import Undefined, ValidationError
+from breeze import uimodules, Undefined, ValidationError
 from breeze.forms.fields import Field
 from breeze.utils import default_label, is_engine
 

@@ -1,3 +1,4 @@
+import datetime
 import json
 import re
 
@@ -49,7 +50,7 @@ class Field(object):
             result = self.write(working_value)
         if self.options is not None:
             if result not in self.options:
-                raise ValidationError('This value is not one of the options.')
+                raise ValidationError('This value is not one of the options')
         callback(result)
 
     def get_label(self):
@@ -148,6 +149,44 @@ class IntegerField(Field):
         if self.maximum is not None and value <= self.maximum:
             raise ValidationError('Must be at most %d' % self.maximum)
         return value
+
+
+class DateTimeField(Field):
+
+    uimodule = uimodules.DateTimeFormField
+
+    def read(self, stored_value):
+        return stored_value
+
+    def write(self, working_value):
+
+        if not isinstance(working_value, (list, tuple)):
+            raise ValidationError('Invalid arguments')
+
+        date_value = None
+        time_value = None
+
+        for value in working_value:
+            if not date_value:
+                try:
+                    date_value = datetime.datetime.strptime(value, '%Y-%m-%d')
+                    continue
+                except ValueError:
+                    pass
+            if not time_value:
+                try:
+                    time_value = datetime.datetime.strptime(value, '%H:%I%p')
+                except ValueError:
+                    pass
+
+        if date_value and time_value:
+            return datetime.datetime.combine(date_value, time_value)
+        elif date_value:
+            raise ValidationError('The time is required.')
+        elif time_value:
+            raise ValidationError('The date is required.')
+        else:
+            raise ValidationError('This field cannot be blank.')
 
 
 class DictField(Field):

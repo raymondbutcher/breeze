@@ -1,0 +1,35 @@
+{% extends "forms/fields/field.html" %}
+
+{% block controls %}
+
+    {% set values = form.data.get(field.name) %}
+
+    {# set date_value = field_value and field_value.strftime('%y-%m-%d') or '' #}
+    {# set time_value = field_value and field_value.strftime('%I:%M%p') or '' #}
+    
+    <input
+        id="form_{{ field.name }}_date"
+        name="{{ field.name }}[]"
+        placeholder="Date"
+        class="input-small datepicker"
+        type="text"
+        value="{{ values and values[0] or '' }}"
+        data-date-format="yyyy-mm-dd"
+    />
+    <input
+        id="form_{{ field.name }}_time"
+        name="{{ field.name }}[]"
+        placeholder="Time"
+        class="input-small timepicker"
+        type="text"
+        value="{{ values and len(values) > 1 and values[1] or '' }}"
+        data-timepicker-options='{"scrollDefaultNow": true}'
+    />
+
+    {% if field_error %}
+        <span class="help-inline noscript">
+            {{ field_error }}
+        </span>
+    {% end %}
+
+{% end %}
